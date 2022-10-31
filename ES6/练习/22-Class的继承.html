@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class的继承</title>
+</head>
+<body>
+    
+    <script>
+        const { log } = console;
+        // class Parent {
+        //     constructor(name) {
+        //         this.name = name;
+        //         log('我是父类的构造函数...   ', name);
+        //     }
+
+        //     getName() {
+        //         return '父类 - name';
+        //     }
+        // }
+
+        // class Child extends Parent {
+        //     constructor(name, age) {
+        //         super(name);
+        //         this.age = age;
+        //         log('我是子类的构造函数...   ', name, age);
+        //     }
+
+        //     getName() {
+        //         return '子类 - name';
+        //     }
+            
+        //     getParentName() {
+        //         return super.getName();
+        //     }
+        // }
+
+        // class SubChild extends Child {
+        //     constructor(name, age, country) {
+        //         super(name, age);
+        //         this.country = country;
+        //         log('我是子子类的构造函数...   ', name, age, country);
+        //         log(super.valueOf() instanceof SubChild);
+        //         log(super.valueOf() instanceof Child);
+        //         log(super.valueOf())    // 返回当前实例
+        //     }
+
+        //     getName() {
+        //         return '子子类 - name';
+        //     }
+
+        //     getParentName() {
+        //         return super.getName();
+        //     }
+
+        //     static staticMethid() {
+
+        //     }
+        // }
+
+        // let instance1 = new Parent('张三');
+        // let instance2 = new Child('李四', 20);
+        // let instance3 = new SubChild('王五', 30, '中国');
+
+        // log('--------super作为对象使用--------');
+        // log(instance2.getParentName());
+        // log(instance3.getParentName());
+
+        // log(Object.keys(SubChild.prototype));
+        // log(Object.getOwnPropertyNames(SubChild.prototype));
+
+        // ------------- 对象的继承 ------------------
+
+        // 先改写对象原型上的toString方法
+        // Object.prototype.toString = function() {
+        //     return '对象原型上的toString方法 ---' + this.name;
+        // }
+
+        // 这个普通对象，继承自对象原型，也继承了toString方法
+        // let Obj = {
+        //     name: '我是普通对象的name',
+        //     toString() {
+        //         console.log('我是对象的toString方法');
+        //         // 普通方法内 以 对象 的形式来调用super，调用父类的原型对象的toString方法，方法内部的this指向当前的子类实例。
+        //         return super.toString(); // 对象原型上的toString方法 --- 我是普通对象的name
+        //     }
+        // }
+
+        // log(Obj.toString());
+
+
+        // ------------ prototype  __proto__ -----------------
+
+        // class A {
+        //     constructor() {
+        //         console.log('A构造函数');
+        //     }
+        // }
+        // class B extends A {
+        //     constructor() {
+        //         super();
+        //         console.log('B构造函数');
+        //     }
+        // }
+
+        // log(B.__proto__ === A); // true
+        // log(B.prototype.__proto__ === A.prototype); // true
+
+        // let a1 = new A();
+        // let b1 = new B();
+
+        // a1 的 __proto__ 属性，指向的是A类的构造函数的 prototype属性
+        // log(a1.__proto__ === A.prototype)
+
+        // ---------- 类的继承的实现 --------------
+        // class P1 {}
+        // class P2 {}
+
+        // p2的实例继承p1的实例
+        // Object.setPrototypeOf(P2.prototype, P1.prototype);
+
+        // p2继承p1的静态属性
+        // Object.setPrototypeOf(P2, P1);
+
+        class C1 {}
+        class C2 extends C1 {}
+
+        let c3 = new C2();
+        log(c3 instanceof C1);
+        log(c3 instanceof C2);
+        log(C2.__proto__ === C1);
+        log(C2.prototype instanceof C1);
+        log(C2.prototype.__proto__ === C1.prototype);
+    </script>
+</body>
+</html>

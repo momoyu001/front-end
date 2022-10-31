@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class</title>
+</head>
+<body>
+    
+    <script>
+        const { log } = console;
+        // ------  ES5 ---------
+        // 构造函数
+        function Point(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        Point.prototype.toString = function () {
+            console.log(this.x + ', ' + this.y);
+        }
+
+        let point1 = new Point(10, 20);
+        point1.toString();
+        console.log(Object.keys(Point.prototype))   // toString
+        console.log(Object.getOwnPropertyNames(Point.prototype));   // constructor toString
+
+        // -------- ES6 ---------
+
+        class PointES6 {
+            // 类的构造方法
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+
+            toString() {
+                console.log(this.x + ', ' + this.y);
+            }
+        }
+
+        let point2 = new PointES6(50, 30);
+        point2.toString();
+        // 类本身 指向构造函数
+        console.log(PointES6 === PointES6.prototype.constructor);
+        console.log(point2.constructor === PointES6.prototype.constructor)
+
+        function getX() {
+            console.log(this.x);
+        }
+
+        function getY() {
+            console.log(this.y);
+        }
+
+        Object.assign(PointES6.prototype, {
+            getX,
+            getY
+        })
+
+        point2.getX();
+        point2.getY();
+
+        // toString() 是内部定义的类，不可以枚举
+        console.log(Object.keys(PointES6.prototype));   // getX  getY
+        // 类里面的contructor是不可以枚举的
+        console.log(Object.getOwnPropertyNames(PointES6.prototype));    // constructor toString getX getY
+
+        log(point2.hasOwnProperty('x'))
+        log(point2.hasOwnProperty('y'))
+        log(point2.hasOwnProperty('toString'))
+        log(point2.__proto__.hasOwnProperty('toString'))
+
+        // 类的所有实例共享一个原型对象
+        let point3 = new PointES6(100, 200);
+        log(point3.__proto__ === point2.__proto__); // true， __proto__ 指向  PointES6.prototype.
+
+        class MyClass {
+            constructor () {
+
+            }
+
+            // prop属性的存值函数、取值函数
+            get prop() {
+                return 'getter'
+            }
+
+            set prop(value) {
+                console.log('setter', value);
+            }
+        }
+
+        let myClass1 = new MyClass();
+        myClass1.prop = '123';  // setter 123
+        log(myClass1.prop);     // getter
+
+        log(Object.getOwnPropertyDescriptor(MyClass.prototype, 'prop'));
+        log(MyClass.name)
+
+
+        // 表达式的声明Class
+        // Me只能在内部使用，外部使用的时候，只能使用MyClass1
+        const MyClass1 = class Me {
+            constructor(name) {
+                this.name = name;
+                log(name);
+            }
+
+            getName() {
+                return Me.name
+            }
+
+            // for ...  of自动调用该方法，遍历器接口
+            *[Symbol.iterator] () {
+                console.log('遍历器')
+            }
+        }
+
+        let class2 = new MyClass1('张三');
+        log(MyClass1.name);
+
+        for (let item of new MyClass1('李四')) {
+            // console.log(item)
+        }
+
+        // ----- 类的静态方法 --------
+        class StaticClass {
+            // 定义在类的顶层的实例属性。
+            count = 0;
+            constructor(name) {
+                this.name = name;
+            }
+
+            static getName() {
+                log('静态方法');
+                this.bar()
+            }
+
+            getName() {
+                log('实例方法')
+                this.bar()
+            }
+
+            bar() {
+                log('实例的 - bar 方法');
+            }
+
+            static bar() {
+                log('类的 - bar 方法');
+            }
+        }
+
+        let class3 = new StaticClass('huqiqi');
+        StaticClass.getName();
+        class3.getName();
+        log(class3.count);  // 0
+
+        // ----- 私有属性和私有方法 ------
+        class PrivateClass {
+            #count = 1000;
+            name = '我是prop'
+
+            getCount() {
+                return this.#count;
+            }
+
+            runMethod() {
+                this.#outter();
+            }
+
+            #outter() {
+                log('我是私有方法');
+            }
+        }
+
+        let pClass1 = new PrivateClass();
+        log(pClass1.getCount());
+        log(pClass1.name);
+        // pClass1.#outter();   // 报错
+        pClass1.runMethod();
+    </script>
+</body>
+</html>

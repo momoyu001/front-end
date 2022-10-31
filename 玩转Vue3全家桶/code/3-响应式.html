@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue的响应式原理</title>
+</head>
+<body>
+    <script>
+        // ------- 实现响应式：Object.definProperty -------
+        // let obj = {};
+        // let count = 2;
+        // let double = getDouble(count);
+
+        // function getDouble(count) {
+        //     return count * 2;
+        // }
+
+        // Object.defineProperty(obj, 'count', {
+        //     get() {
+        //         return count;
+        //     },
+        //     set(value) {
+        //         count = value;
+        //         double = getDouble(value);
+        //     }
+        // })
+
+        // console.log(double); // 4
+        // obj.count = 10;
+        // console.log(double); // 20
+
+        // ------ 实现响应式：Proxy ------
+        // let handler = {
+        //     get: function(target, prop) {
+        //         return target[prop];
+        //     },
+        //     set: function(target, prop, value) {
+        //         target[prop] = value;
+        //         if (prop === 'count') {
+        //             double = getDouble(value);
+        //         }
+        //     },
+        //     deleteProperty(target, prop) {
+        //         delete target[prop];
+        //         if (prop === 'count') {
+        //             double = NaN;
+        //         }
+        //     }
+        // }
+        // let proxy = new Proxy(obj, handler);
+
+        // console.log(obj.count, double); // undefined 4
+        // proxy.count = 2;
+        // console.log(obj.count, double); // 2 4
+        // proxy.count = 10;
+        // delete proxy.count;
+        // console.log(obj.count, double); // undefined NaN
+
+        // 实------ 现响应式：setter和getter ------
+        let getDouble = n => n * 2;
+        let _value = 1;
+        let double = getDouble(_value);
+
+        let count = {
+            get value() {
+                return _value;
+            },
+            set value(val) {
+                _value = val;
+                double = getDouble(val);
+            }
+        }
+
+        console.log(count.value, double);
+        count.value = 2;
+        console.log(count.value, double);
+
+    </script>
+</body>
+</html>

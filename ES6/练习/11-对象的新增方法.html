@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>对象的新增方法</title>
+</head>
+<body>
+    <script>
+        let parent = {
+            pName: '李四',
+            pAge: 30
+        }
+
+        let obj = {
+            name: 'zhangsan',
+            age: 20
+        }
+
+        obj.__proto__ = parent;
+
+        Object.defineProperty(obj, 'prop1', {
+            value: '新增的属性1',
+            configurable: true,
+            enumerable: true,
+            writable: true
+        });
+
+        Object.defineProperty(obj, 'prop2', {
+            value: '新增的属性2'
+        })
+
+        // console.log(obj);
+        // console.log(obj.pName);
+        // console.log(obj.pAge);
+        // let descriptor = Object.getOwnPropertyDescriptor(obj, 'name');
+        // let descriptors = Object.getOwnPropertyDescriptors(obj);
+        // console.log(descriptor)
+        // console.log(descriptors);
+
+
+        let source = {
+            get foo() {
+                return 100
+            },
+            set boo(value) {
+                console.log(200)
+            }
+        }
+
+        let target = {
+            name: 'test'
+        };
+
+        Object.assign(target, Object.getOwnPropertyDescriptors(source));
+        // console.log(target);
+
+        let sym1 = Symbol.for('test');
+        let obj1 = {
+            [sym1]: 'testSymbol',
+            name: '张三',
+            age: 10
+        }
+
+        console.log(Object.keys(obj1));
+        console.log(Object.values(obj1));
+        console.log(Object.entries(obj1));
+
+        console.log(Object.keys('footest'));
+        console.log(Object.values('footest'));
+        console.log(Object.entries('footest'));
+
+        let objT = Object.fromEntries(new URLSearchParams('foo=bar&baz=qux'));
+        console.log(objT);
+
+        let aaa = Symbol.for('aaa123');
+        console.log(Symbol.keyFor(aaa));
+    </script>
+</body>
+</html>

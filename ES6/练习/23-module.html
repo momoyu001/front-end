@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6模块化</title>
+</head>
+<body>
+    
+    <script src="./23-module2.js" type="module"></script>
+    <!-- 内嵌的ES6模块 -->
+    <script type="module">
+        import { firstName } from './23-module1.js';
+        console.log(firstName)
+        // 模块之中，顶层的this指向undefined，而不是window
+        console.log(this);
+    </script>
+    <script>
+        const { log } = console;
+        console.log(this); // window
+    </script>
+</body>
+</html>

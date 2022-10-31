@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重学前端</title>
+    <style>
+        #deng {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+        }
+
+        #css_deng {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin-top: 100px;
+            animation: toggle_color linear 6s infinite;
+        }
+
+        @keyframes toggle_color {
+            0%, 50% {
+                background-color: green;
+            }
+
+            51%, 68% {
+                background-color: yellow;
+            }
+
+            69%, 100% {
+                background-color: red;
+            }
+        }
+
+        @counter-style my-counter-style {
+            system: cyclic;
+            symbols: 🐟;
+            suffix: " ";
+        }
+
+        .ul-box {
+            /* list-style-type: my-counter-style; */
+            list-style-type: toggle(circle, square);
+        }
+
+        div[name~="2"] {
+            color: #ff0000;
+        }
+
+        div[name|="1"] {
+            color: #ff00ff;
+        }
+        div:not(:hover) {
+            background-color: #dea;
+        }
+        div[value|="value"] {
+            background-color: #172dea;
+        }
+
+        div[value^="v"] {
+            background-color: #121212;
+        }
+
+    </style>
+</head>
+<body>
+    <ul class="ul-box">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+    </ul>
+
+    <div name="1 2" value="value-2" age="2" link="3">测试一下属性选择器</div>
+    <div>ceshi yaaa</div>
+
+    <!-- 
+    <div id="deng"></div>
+    <div id="css_deng"></div>
+    <div class="box1">
+        <h1>JavaScript</h1>
+        <h2>我们需要模拟类吗?</h2>
+    </div>
+    <div class="box2">
+        <hgroup>
+            <h1>JavaScript</h1>
+            <h2>我们需要模拟类吗?</h2>
+        </hgroup>
+    </div>
+
+    <pre>
+        <samp>
+            <code>
+            GET /home.html HTTP/1.1
+            Host: www.example.org
+            </code>
+        </samp>
+    </pre>
+
+    <pre>
+        <code>
+            &lt;html&gt;
+            &lt;head&gt;
+                &lt;title&gt;Example.org – The World Wide Web&lt;/title&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+                &lt;p&gt;The World Wide Web, abbreviated as WWW and commonly known ...&lt;/p&gt;
+            &lt;/body&gt;
+            &lt;/html&gt;
+        </code>
+    </pre>
+
+     -->
+
+    <script>
+        // 实现一个红绿灯
+        function sleep(duration) {
+            return new Promise(function(resolve, reject) {
+                setTimeout(resolve, duration);
+            })
+        }
+
+        async function changeColor(duration, color) {
+            document.getElementById('deng').style.background = color;
+            await sleep(duration);
+        }
+
+        async function main() {
+            while(true) {
+                await changeColor(3000, 'green');
+                await changeColor(2000, 'yellow');
+                await changeColor(1000, 'red');
+            }
+        }
+
+        // main();
+    </script>
+</body>
+</html>

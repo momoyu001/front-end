@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>初识Vue3-组合API</title>
+    <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    
+    <div id="app">
+        <h1 @click="add">{{ state.count }} * 2 = {{ double }}</h1>
+    </div>
+
+    <script>
+        const { reactive, computed } = Vue;
+
+        const App = {
+            setup() {
+                const state = reactive({
+                    count: 1
+                })
+
+                function add() {
+                    state.count++;
+                }
+
+                const double = computed(() => state.count*2);
+
+                return { state, add, double };
+            }
+        }
+
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+</html>

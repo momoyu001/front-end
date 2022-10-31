@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>async</title>
+</head>
+<body>
+    <script>
+        class Sleep {
+            constructor(timeout) {
+                this.timeout = timeout;
+            }
+
+            then(resolve, reject) {
+                const startTime = Date.now();
+                setTimeout(
+                    () => resolve(Date.now() - startTime),
+                    this.timeout
+                )
+            }
+        }
+
+        (async () => {
+            const sleep = await new Sleep(2000);
+            console.log(sleep);
+        })();
+    </script>
+</body>
+</html>

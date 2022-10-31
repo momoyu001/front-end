@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue3 - List清单</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <style>
+        .done {
+            color: #d3d3d3;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"> 
+        <h2>{{ title }}</h2>
+        <input type="text" v-model="title" @keydown.enter="addTodo">
+        <ul>
+            <li v-for="todo in todos">
+                <input type="checkbox" v-model="todo.done">
+                <span :class="{ done: todo.done }">{{ todo.title }}</span>
+            </li>
+            <div>
+                <input type="checkbox" v-model="allDone" name="checkbox">
+                <label for="checkbox">全选</label>
+                {{ todos.filter(v => v.done).length }} / {{ todos.length }}
+            </div>
+            <div>
+                <button v-if="active < all" @click="clear">清理</button>
+            </div>
+        </ul>
+    </div>
+
+
+    <script>
+        const App = {
+            data() {
+                return {
+                    title: 'vue3开始啦~~~',
+                    todos: []
+                }
+            },
+            computed: {
+                active() {
+                    return this.todos.filter(item => !item.done).length;
+                },
+                all() {
+                    return this.todos.length;
+                },
+                allDone: {
+                    get: function() {
+                        return this.active === 0;
+                    },
+                    set: function(val) {
+                        this.todos.forEach(todo => {
+                            todo.done = val;
+                        });
+                    }
+                }
+            },
+            watch: {
+                'todos': {
+                    handler(n, o) {
+                        localStorage.setItem('todos', JSON.stringify(this.todos || []));
+                    },
+                    deep: true
+                }
+            },
+            // 页面挂载完成的生命周期
+            mounted() {
+                if (localStorage.getItem('todos')) {
+                    this.todos = JSON.parse(localStorage.getItem('todos'));
+                } else {
+                    this.todos = [] 
+                }
+            },
+            beforeUnmount() {
+                console.log('卸载...')
+            },
+            // 页面卸载的生命周期 - 仅仅刷新页面，不会触发该生命周期；在仅刷新页面的场景下，可以在created生命周期里面监听beforeunload事件，如果有todos，存入localStorage
+            unmounted() {
+                console.log('卸载');
+                localStorage.setItem('todos', this.todos);
+            },
+            methods: {
+                addTodo() {
+                    this.todos.push({
+                        title: this.title,
+                        done: false
+                    });
+                },
+                clear() {
+                    this.todos = this.todos.filter(v => !v.done);
+                }
+            }
+        }
+
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+</html>

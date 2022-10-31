@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy</title>
+</head>
+<body>
+    <script>
+        // let proxy1 = new Proxy({}, {
+        //     get: function (target, propKey, receiver) {
+        //         console.log(target);
+        //         console.log(propKey);
+        //         console.log(receiver);
+        //         return 2000;
+        //     }
+        // })
+
+        // console.log(proxy1.time);
+
+        // let target = {};
+        // let handler = {};
+        // let proxy2 = new Proxy(target, handler);
+        // proxy2.name = 'Proxy是空的';
+        // console.log(target.name);
+        // target.time = '2021';
+        // console.log(proxy2.time);
+
+        // let proxy3 = new Proxy({}, {
+        //     get: function(target, propKey, receiver) {
+        //         return 1000;
+        //     }
+        // })
+        // // proxy实例作为对象的原型
+        // let Obj1 = Object.create(proxy3);
+        // Obj1.name = 'obj1新增的name属性';
+        // // 访问自己的属性，没问题
+        // console.log(Obj1.name);
+        // // 访问自己没有的属性，就会往原型上去查找，然后被拦截
+        // console.log(Obj1.time);
+
+
+        /**
+         * Proxy拦截操作 - 13种
+         * **/
+        let target2 = {};
+        let handler2 = {
+            /**
+             * receiver: 实例本身，严格地说，是操作行为所针对的对象，可选参数
+             * **/
+            get: function(target, propKey, receiver) {
+                console.log('get拦截...');
+                // if (propkey in target) {
+                //     return target[propKey];
+                // } else {
+                //     throw new ReferenceError(`Prop name ${propkey} does not exist`);
+                // }
+            },
+            /**
+             * 最后一个参数可选
+             * **/
+            set: function(target, propKey, value, receiver) {
+                console.log('set拦截...');
+                target[propKey] = value;
+                return true;
+            },
+            has: function(target, propkey) {
+                console.log('propKey in proxy拦截...');
+                return target[propKey] ? true : false;
+            },
+            deleteProperty: function(target, propKey) {
+                console.log('delet proxy[propKey]拦截...');
+                delete target[propKey];
+                return true
+            },
+            ownKeys: function(target) {
+                console.log('遍历返回属性名拦截...');
+                return Object.getOwnPropertyNames(traget);
+            },
+            getOwnPropertyDescriptor: function(target, propKey) {
+                console.log('Object.getOwnPropertyDescriptor(proxy, propKey)拦截...');
+                return Object.getOwnPropertyDescriptor(obj, propKey);
+            },
+            defineProperty: function(target, propKey, propDesc) {
+                console.log('Object.defineProperty(proxy,propKey, propDesc）, Object.defineProperties(proxy, propDescs)拦截...');
+                console.log(propKey)
+                console.log(propDesc);
+                // ...
+                return true;
+            },
+            preventExtensions: function(target) {
+                console.log('Object.preventExtensions(proxy)拦截...');
+                Object.preventExtensions(target);
+                return true;
+            },
+            getPrototypeOf: function(target) {
+                console.log('Object.getPrototypeOf(proxy)拦截...');
+                return Object.getPrototypeOf(target);
+            },
+            isExtensible: function(target) {
+                console.log('Object.isExtensible(proxy)拦截...');
+                // ...
+                return true;
+            },
+            setPrototypeOf: function(target, prototype) {
+                console.log('Object.setPrototype(proxy, prototype)拦截...');
+                Object.setPrototypeOf(target. prototype);
+                return true;
+            },
+            apply: function(target, object, args) {
+                console.log('目标对象是函数时，作为函数调用的拦截...');
+                return Reflect.apply(...arguments) * 2;
+            },
+            construct: function(target, args) {
+                console.log('proxy实例作为构造函数的拦截...');
+                return new target(...args)
+            }
+
+        }
+
+        let proxy4 = new Proxy(target2, handler2);
+
+        Object.defineProperty(proxy4, 'name', {
+            value: 120
+        });
+
+        console.log(proxy4);
+        console.log(proxy4.name);
+        proxy4.time = '2021';
+        console.log(Object.getPrototypeOf(proxy4));
+        console.log(proxy4.getReceiver);
+
+        function sum(x, y) {
+            return x + y;
+        }
+
+        let proxy5 = new Proxy(sum, handler2);
+        console.log(proxy5(2, 10));
+    </script>
+</body>
+</html>

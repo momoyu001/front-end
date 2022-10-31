@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            table {
+                margin: 20px auto;
+            }
+
+            table tr td,
+            table tr th {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            let arr = [
+                [1, 1, 3],
+                [4, 5, 6],
+                [3, 5, 7],
+                [10, 5, 8]
+            ]
+
+            let customTable = document.createElement('table');
+            customTable.setAttribute('border', 1);
+            customTable.setAttribute('width', '80%');
+
+            for (let i = 0; i < arr.length; i++) {
+                let tr = document.createElement('tr');
+                let len = arr[i].length;
+                let item = arr[i];
+                for (let j = 0; j < len; j++) {
+                    let td = document.createElement('td');
+                    td.innerHTML = arr[i][j];
+                    tr.append(td);
+                }
+
+                customTable.append(tr);
+            }
+
+            console.log(customTable)
+            console.log(customTable.childElementCount)
+            console.log(customTable.childNodes[0])
+
+            let td_len = arr[0].length; // 列数
+            let tr_len = arr.length; // 行数
+            let sum = 1;
+            let rowIndex = -1;
+
+            // 列循环
+            for (let i = 0; i < td_len; i++) {
+                // 行循环
+                for (let j = 0; j < tr_len - 1; j++) {
+                    console.log(arr[j][i], arr[j+1][i])
+                    if (arr[j][i] === arr[j+1][i]) {
+                        // 当前行的这个元素和下一行的这个元素是一样的
+                        if (rowIndex === -1) {
+                            rowIndex = j;
+                        }
+                        sum++;
+                    } else {
+                        // 内容不相同
+                        sum = 1;
+                        rowIndex = -1;
+                    }
+                    if (rowIndex >= 0) {
+                        console.log(333)
+                        console.log(customTable.childNodes[j])
+                        customTable.childNodes[j].childNodes[rowIndex].setAttribute('rowspan', sum);
+                    }
+                }
+            }
+
+
+            document.getElementsByTagName('body')[0].append(customTable);
+            console.log(customTable);
+        </script>
+    </body>
+</html>

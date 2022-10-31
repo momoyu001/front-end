@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 1、解构赋值
+        // const { log } = console;
+        // let obj = {
+        //     p: [
+        //     'Hello',
+        //     { y: 'World' }
+        //     ]
+        // };
+        // let { p: p, p: [x, { y }] } = obj;
+        // log(p)
+        // log(x);
+        // log(y);
+
+        // // 2、模板字符串
+        // let func1 = (arg1) => {
+        //     console.log(arg1);
+        // }
+
+        // func1`test---ceshi`
+
+        // // 2、模板字符串
+        // let func2 = (arg2, ...arg3) => {
+        //     console.log(arg2);
+        //     console.log(arg3);
+        // }
+
+        // let func3 = (arg1, arg2, arg3) => {
+        //     console.log(arg1);
+        //     console.log(arg2);
+        //     console.log(arg3);
+        // }
+
+        // let a = 5;
+        // let b = 10;
+        // func2`hello ${ a + b } world ${ a*b }`;
+        // func3`hello ${ a + b } world ${ a*b }`;
+
+
+        // 3、raw（）方法
+        console.log(String.raw`hi \ apple`);
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数的扩展</title>
+</head>
+<body>
+    
+
+    <script>
+        // function foo(x, x, y) {
+        //     console.log(2);
+        // }
+
+        // function boo(x, z, y = 1) {
+        //     console.log(1);
+        // }
+
+        // function foo (x, y = x) {
+        //     console.log(y);
+        // }
+
+        // foo();
+
+
+        // var x = 10;
+        // function boo(y = x) {
+        //     console.log(y);
+        // }
+
+        // boo();
+
+        // let test1 = () => {
+        //     console.log(arguments);
+        // }
+        // // test1();
+
+        // let test2 = function () {
+        //     console.log(arguments);
+        // }
+        // test2();
+
+        // let test3 = function() {
+        //     return () => {
+        //         console.log(arguments);
+        //     }
+        // }
+        // test3()();
+
+        // var id = 12000;
+        // function test4() {
+        //     setTimeout(() => {
+        //         console.log(this)
+        //         console.log('id', this.id);
+        //     }, 0)
+        // }
+        // test4();
+        // test4.call({ id: 400 })
+
+        // function test5() {
+        //     return () => {
+        //         console.log(this.id);
+        //     }
+        // }
+
+        // let testFunc5 = test5();
+        // console.log(testFunc5);
+        // testFunc5.call({ id: 300 });    // 这里的改变this是无效的，因为箭头函数根本没有自己的this
+
+        // function test6() {
+        //     'use strict';
+        //     // 严格模式下回报错，不能访问这两个变量
+        //     // console.log(arguments)
+        //     // console.log(test6.caller);
+        // }
+
+        // test6();
+
+        // 栗子
+        function tco(f) {
+            var value;
+            var active = false;
+            var accumulated = [];
+
+            return function accumulator() {
+                accumulated.push(arguments);
+                if (!active) {
+                    active = true;
+                    while(accumulated.length) {
+                        console.log(accumulated.length)
+                        value = f.apply(this, accumulated.shift());
+                        console.log(value);
+                    }
+
+                    active = false;
+                    return value;
+                }
+            }
+        }
+
+        var sum = tco(function(x, y) {
+            if (y > 0) {
+                console.log('y')
+                return sum(x + 1, y - 1);
+            } else {
+                console.log('x')
+                return x;
+            }
+        })
+
+        let result = sum(1, 10);
+        console.log(result);
+    </script>
+</body>
+</html>

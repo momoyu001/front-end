@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #box_outer {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ff0000;
+        }
+
+        .item {
+            width: 200px;
+            height: 600px;
+            margin: 20px;
+            border: 1px solid #ff00ff;
+        }
+    </style>
+</head>
+<body>
+    <button id="button">点击切换</button>
+    <div class="box" id="box_outer">
+        <div class="item" id="item_1">1</div>
+        <div class="item" id="item_2">2</div>
+        <div class="item" id="item_3">3</div>
+    </div>
+    <script>
+        Array.prototype.myMap = function(fn) {
+            let newArr = [];
+
+            console.log(this);
+
+            return newArr;
+        }
+
+        let arr = new Array(1, 2, 3)
+
+        arr.myMap();
+
+        let button = document.querySelector('#button');
+        button.onclick = function(e) {
+            window.location.href = '#item_2';
+        }
+        // window.onresize = () => {
+        //     return (() => {
+        //         setTimeout(() => {
+        //             console.log('www');
+        //         }, 100)
+        //     })()
+        // }
+
+        let targetNode = document.getElementById('item_2');
+        let parentNode = document.getElementById('box_outer');
+
+        /**
+
+        // 创建一个回调，mutation.type表示监听变化的类型
+        let callback = function(mutationsList) {
+            console.log('回调函数。。。', mutationsList);
+            for (let mutation of mutationsList) {
+                if (mutation.type == 'attributes') {
+                    console.log('The ' + mutation.attributeName + ' attribute was modified.');
+                } else if (mutation.type == 'childList') {
+                    console.log('A child node has been added or removed.');
+                }
+            }
+        }
+
+        // 创建实例对象
+        let observer = new MutationObserver(callback);
+
+        // config包含需要监听的类型
+        let config = {
+            attributes: true,
+            childList: true,
+            subtree: true
+        }
+
+        // 开始执行监听，传入监听的dom对象于config。第一个参数是要监听的对象，第二个参数配置项
+        observer.observe(targetNode, config);
+
+        **/
+
+
+        const resizeObserver = new ResizeObserver(entries => {
+            console.log('回调。。。。')
+            for(let entry of entries) {
+                console.log(entry.target.offsetWidth);
+            }
+        })
+
+        resizeObserver.observe(parentNode);
+        resizeObserver.observe(targetNode);
+
+        // 定时器，3秒后改变属性值，可以触发观察者
+        setTimeout(() => {
+            parentNode.style.width = '400px';
+            targetNode.style.width = '300px';
+            const inputNodes = targetNode.getElementsByClassName('item');
+        }, 3000);
+
+        setTimeout(() => {
+            // resizeObserver.unobserve(targetNode);
+        }, 2000)
+
+    </script>
+</body>
+</html>

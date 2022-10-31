@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflect</title>
+</head>
+<body>
+    <script>
+        /**
+         * get方法
+         * **/
+        let obj1 = {
+            name: '张三',
+            age: 20,
+            get desc() {
+                return this.name + '  ' + this.age;
+            }
+        }
+
+        let receiver1 = {
+            name: '李四',
+            age: 25
+        }
+
+        console.log(Reflect.get(obj1, 'name'));
+        console.log(Reflect.get(obj1, 'desc'));
+        console.log(Reflect.get(obj1, 'desc', receiver1));
+
+        /**
+         * set方法
+         * **/
+        let obj2 = {
+            foo: 2,
+            set setName(value) {
+                this.foo = value;
+                return true
+            }
+        };
+        let receiver2 = {
+            foo: 1200
+        }
+        console.log(Reflect.set(obj2, 'name', 'test名称'));
+        console.log(Reflect.get(obj2, 'name'));
+        Reflect.set(obj2, 'setName', 120);
+        console.log(Reflect.get(obj2, 'foo'));
+        Reflect.set(obj2, 'setName', 100, receiver2);
+        console.log(Reflect.get(obj2, 'foo'));
+        console.log(Reflect.get(receiver2, 'foo'));
+        
+
+        /**
+         * has方法
+         * **/
+        let obj3 = {
+            foo: 'foo'
+        }
+        console.log(Reflect.has(obj3, 'foo'));
+        console.log(Reflect.has(obj3, 'age'));
+
+        /**
+         * deleteProperty方法
+         * **/
+        let obj4 = {
+            name: 'name4'
+        }
+
+        console.log(Reflect.deleteProperty(obj4, 'name'));
+        console.log(Reflect.deleteProperty(obj4, 'age'));
+
+        /**
+         * construct方法
+         * **/
+        function Func1 (name) {
+            this.name = name;
+        }
+
+        const func1Instance = Reflect.construct(Func1, ['构造函数...']);
+        console.log(func1Instance)
+
+        /**
+         * getPrototypeOf方法
+         * **/
+        function Func2() {
+        
+        }
+
+        let obj5 = new Func2();
+        console.log('原型是否一致... ', Reflect.getPrototypeOf(obj5) === Func2.prototype);
+
+        /**
+         * setPrototypeOf方法
+         * **/
+        function Func3 () {
+            console.log('Func3实例....')
+        }
+
+        let obj6 = {};
+
+        Reflect.setPrototypeOf(obj6, Func3.prototype);
+        console.log(obj6.__proto__ === Func3.prototype)
+
+        /**
+         * apply(func, thisArg, args)
+         * **/
+        let arr1 = [1,23, 89, 20];
+        const max1 = Math.max.apply(Math, arr1);
+        console.log(max1);
+        const max2 = Reflect.apply(Math.max, Math, arr1);
+        console.log(max2);
+        console.log(Reflect.apply(Object.prototype.toString, max2, []));
+
+        /**
+         * defineProperty
+         * **/
+        let obj7 = {};
+        Reflect.defineProperty(obj7, 'time', {
+            value: Date.now()
+        })
+        Reflect.defineProperty(obj7, 'timeNow', {
+            value: Date.now()
+        })
+        console.log(obj7.time);
+        console.log(obj7.timeNow);
+
+        let p = new Proxy({}, {
+            defineProperty(target, prop, descriptor) {
+                console.log(descriptor)
+                Reflect.defineProperty(target, prop, descriptor);
+            }
+        })
+
+        p.foo = 'bar';
+        console.log(p.foo);
+
+        /**
+         * getOwnPropertyDescriptor方法
+         * **/
+        let obj8 = {
+            name: 'obj8 - name'
+        }
+
+        console.log(Reflect.getOwnPropertyDescriptor(obj8, 'name'));
+
+        /**
+         * isExtensible
+         * **/
+        let obj9 = {}
+        console.log(Reflect.isExtensible(obj8));
+
+        /**
+         * preventExtensions方法
+         * **/
+        let obj10 = {};
+        Reflect.preventExtensions(obj10);
+        console.log(Reflect.isExtensible(obj10));
+
+        /**
+         * ownKeys方法
+         * **/
+        let obj11 = {
+            name: 'ownKyesName',
+            age: 30,
+            [Symbol('111')]: 'symbol111',
+            [Symbol.for('222')]: 'symbol222'
+        }
+
+        console.log(Reflect.ownKeys(obj11));
+
+        /**
+         * 实例：观察者模式
+         * **/
+
+        const queeudObservers = new Set();
+
+        // 将所有观察者放到一个集合里面，在拦截到set之后，可以全部都触发
+        const observe = fn => queeudObservers.add(fn);
+        // 给每一个被观察者都添加了一个Proxy代理，做了set的拦截。。。
+        const observable = obj => new Proxy(obj, { set });
+
+        function set(target, key, value, receiver) {
+            const result = Reflect.set(target, key, value, receiver);
+
+            queeudObservers.forEach(observe => observe());
+            return result;
+        }
+
+        // 观察的函数
+        function print() {
+            console.log('我是观察者。。。。。。');
+        }
+
+        function getName () {
+            console.log('我是第二个观察者。。。。。。');
+        }
+
+        // 添加观察的函数
+        observe(print);
+        observe(getName);
+
+        // 被观察者 - 观察的目标
+        let person = observable({
+            name: '我是被观察者...',
+            age: 20
+        });
+
+        person.name = '我是新的被观察者...';
+    </script>
+</body>
+</html>

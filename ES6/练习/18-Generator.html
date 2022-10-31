@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator</title>
+</head>
+<body>
+    <script>
+        function* helloWorld() {
+            console.log('执行了1...');
+            yield 'red';
+            console.log('执行了2...');
+            yield 'green';
+            console.log('执行了3...');
+            yield 'blue';
+            console.log('执行了4...');
+            return 'end';
+        }
+
+        let func1 = helloWorld();
+        // console.log(func1.next());  // 执行  从函数头部开始到到第一个 yield 结束
+        // console.log(func1.next());  / / 执行  从上一个yield技术后开始，到这一个yield结束；
+        // console.log(func1.next());
+        // console.log(func1.next());
+        // console.log(func1.next());
+
+
+        function* errorFunc() {
+            try {
+                yield console.log('a');
+            } catch(e) {
+                console.log('内部捕获', e)
+            }
+
+            yield console.log('b');
+            yield console.log('c');
+        }
+
+        // let func2 = errorFunc();
+        // func2.next();   // a
+        // func2.throw();  // b
+        // func2.next();   // c
+
+        function* foo() {
+            yield console.log('1');
+            yield console.log('2');
+            yield console.log('3');
+        }
+
+        function* bar() {
+            yield console.log('4');
+            yield* foo();
+            yield console.log('5')
+        }
+
+        // let func3 = bar();
+        // func3.next();
+        // func3.next();
+        // func3.next();
+        // func3.next();
+        // func3.next();
+        // func3.next();
+
+        function* iterTree(tree) {
+            if (Array.isArray(tree)) {
+                for (let i = 0; i < tree.length; i++) {
+                    yield* iterTree(tree[i]);
+                }
+            } else {
+                yield* tree
+            }
+        }
+
+        const tree = ['1', ['2', '3'], ['4', '5', '6'], '7'];
+
+        // for(let item of iterTree(tree)) {
+        //     console.log(item)
+        // }
+
+        // console.log([...iterTree(tree)]);
+
+        function* gen(x) {
+            let y = yield x + 1;
+            return y;
+        }
+
+        // 一个yield执行两次next就结束了
+        let g = gen(1);
+        console.log(g.next());
+        console.log(g.next(22)); // 参数是上个表达式的返回值，也就是{ value: '' } 中value的值
+        console.log(g.next(10));
+        console.log(g.next(10));
+
+    </script>
+</body>
+</html>

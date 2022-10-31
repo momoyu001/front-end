@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            #app {
+                color: #ff0000;
+            }
+
+            #app::first-letter {
+                font-size: 20px;
+            }
+
+            #app::after {
+                content: 'ddd';
+            }
+            .trans {
+                width: 200px;
+                height: 200px;
+                background-color: #00ff00;
+            }
+            .trans1 {
+                width: 200px;
+                height: 200px;
+                background-color: #ff0000;
+                transform: translateX(400px) scale(0.5);
+            }
+            .trans2 {
+                width: 200px;
+                height: 200px;
+                background-color: #ff00ff;
+                transform: scale(0.5) translateX(400px);
+            }
+
+            .trans3 {
+                width: 200px;
+                height: 200px;
+                background-color: #333eee;
+                transform: translateX(400px);
+            }
+
+            .trans4 {
+                width: 200px;
+                height: 200px;
+                background-color: #22eeee;
+                transform: scale(0.5);
+            }
+
+            #box {
+                width: 200px;
+                height: 200px;
+                background-color: #ff0000;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="trans" id="trans_d"></div>
+        <div class="trans3">只位移</div>
+        <div class="trans4">只缩小</div>
+        <div class="trans1"></div>
+        <div class="trans2"></div>
+        <div id="app">1234</div>
+        <input type="text" name="" id="input" />
+
+        <div id="box"></div>
+
+        <!-- <script src="./index.js"></script> -->
+
+        <script src="./basicJS.js"></script>
+
+        <!-- <script>
+            let dom = document.querySelector('#trans_d');
+            dom.addEventListener('click', function(e) {
+                console.log(1);
+            })
+
+            dom.addEventListener('click', function(e) {
+                console.log(2);
+            })
+
+            dom.addEventListener('click', function(e) {
+                console.log(3);
+            })
+
+            dom.onclick = function() {
+                console.log('333')
+            }
+
+            dom.onclick = function() {
+                console.log('444')
+            }
+        /**
+        let input = document.querySelector('#input');
+
+        input.addEventListener('keydown', () => {
+            inputDebounce();
+        }, false);
+
+        let inputEvent = () => {
+            console.log('ceshi');
+        }
+
+        let inputDebounce = debounce(inputEvent, 1000);
+
+        // 防抖：一定事件间隔之后，才会执行这个事件处理函数
+        function debounce(fn, time) {
+            let timer = null;
+
+            // 使用到闭包来处理
+            return function() {
+                // 把原来的定时器清掉，再重新开始一个定时器，又触发的话，又继续清掉，重新设置。。。
+                // 直到没有再触发，执行最后设置的哪个定时器
+                clearTimeout(timer);
+
+                timer = setTimeout(() => {
+                    fn();
+                }, time);
+            }
+        }
+
+        // 节流：一段时间内只触发一次执行函数
+        function throltle(fn, time) {
+            let timer = null;
+
+            return (val) => {
+                if (timer) {
+                    return;
+                }
+
+                timer = setTimeout(() => {
+                    fn(val);
+                    clearTimeout(timer);
+                    timer = null;
+                }, time);
+            }
+        }
+
+        let inputEvent1 = (val) => {
+            console.log(val);
+        }
+
+        let inputThroltle = throltle(inputEvent1,2000);
+
+        addEventListener('input', (e) => {
+            inputThroltle(e.target.value);
+        }, false);
+
+        **/
+        /**
+        // JS事件循环
+        console.log('1'); // 1
+
+        setTimeout(function () {
+            // 宏-1
+            console.log('2');
+            process.nextTick(function () {
+                // 微-1
+                console.log('3');
+            });
+
+            new Promise(function (resolve) {
+                // 宏-2
+                console.log('4');
+                resolve();
+            }).then(function () {
+                // 微-2
+                console.log('5');
+            });
+        });
+
+        process.nextTick(function () {
+            // 微-3
+            console.log('6');
+        });
+
+        new Promise(function (resolve) {
+            // 宏-3
+            console.log('7');
+            resolve();
+        }).then(function () {
+            // 微-4
+            console.log('8');
+        });
+
+        setTimeout(function () {
+            // 宏-4
+            console.log('9');
+            process.nextTick(function () {
+                // 微-5
+                console.log('10');
+            });
+
+            new Promise(function (resolve) {
+                // 宏-5
+                console.log('11');
+                resolve();
+            }).then(function () {
+                // 微-6
+                console.log('12');
+            });
+        });
+
+        **/
+
+        /**
+         * 
+                宏任务：宏-1 宏-4
+                微任务：微-3 微-4
+
+                1、第一轮事件循环之后，执行微任务 微- 3，微- 4
+                2、执行宏 - 1
+                宏任务：宏-4
+                微任务：微-1  微-2
+                3、执行微任务 1 2
+                4、执行宏-4
+                宏任务：
+                微任务：微-5  微-6
+                5、执行微任务
+
+                输出   1    7（宏-3）   6   8   2   4   3   5   9   11  10 12
+            * 
+            * **/
+        /**
+        class Subscribe {
+            constructor() {
+                this.observerList = [];
+            }
+
+            addObserver(observer) {
+                console.log('添加了')
+                this.observerList.push(observer);
+            }
+
+            notify() {
+                this.observerList.forEach(observer => observer.update());
+            }
+        }
+
+        class Observer {
+            constructor(name) {
+                this.name = name;
+            }
+
+            update() {
+                console.log(`${this.name}更新了。。。`);
+            }
+        }
+
+        let Sub = new Subscribe();
+
+        let ob1 = new Observer('111');
+        let ob2 = new Observer('222');
+        let ob3 = new Observer('333');
+        let ob4 = new Observer('444');
+
+        // Sub.addObserver(ob1);
+        // Sub.addObserver(ob2);
+        // Sub.addObserver(ob3);
+        // Sub.addObserver(ob4);
+
+        // setTimeout(() => {
+        //     Sub.notify();
+        // }, 2000);
+
+        **/
+
+        /**
+
+        // 发布订阅模式
+
+        // 发布者
+        class Pub {
+            constructor() {
+                this.deps = [];
+            }
+
+            addDep(dep) {
+                this.deps.push(dep);
+            }
+
+            publish(dep) {
+                this.deps.forEach(item => item === dep && item.notify());
+            }
+        }
+
+        // 订阅者
+        class Sub {
+            constructor(val) {
+                this.val = val;
+            }
+
+            update(callback) {
+                callback(this.val);
+            }
+        }
+
+        // 调度中心
+        class Dep {
+            // 核心是这个callback函数
+            constructor(callback) {
+                this.subs = [];
+                this.callback = callback;
+            }
+
+            // 添加一个订阅者
+            addSub(sub) {
+                this.subs.push(sub);
+            }
+
+            // 调度中心负责来通知
+            notify() {
+                this.subs.forEach(item => item.update(this.callback));
+            }
+        }
+
+        // 实例化一个发布者
+        let pub = new Pub()
+
+        // 实例化一个调度中心，传入一个用于处理数据的函数-callback
+        const dep1 = new Dep((data) => {
+            console.log('我是调度中心，我先把消息处理一下，然后发给 ===>  ', data);
+        })
+
+        // 实例化订阅者
+        let sub1 = new Sub('订阅者1');
+        let sub2 = new Sub('订阅者2');
+
+        // 发布者绑定调度中心
+        pub.addDep(dep1);
+
+        // 调度中心添加订阅者
+        dep1.addSub(sub1);
+        dep1.addSub(sub2);
+
+        // 发布者把消息推给调度中心
+        pub.publish(dep1);
+
+        **/
+
+        // 原型链继承
+        /**
+        function Parent(name) {
+            this.name = [name];
+        }
+
+        Parent.prototype.getName = function() {
+            return this.name;
+        }
+
+        function Child() {
+
+        }
+
+        // 子类的原型指向父类的实例
+        Child.prototype = new Parent('test');
+        Child.prototype.constructor = Child;
+
+        let c = new Child();
+        console.log(c.name);
+
+        let c2 = new Child();
+        console.log(c.name, c2.name);
+
+        c2.name[0] = 'ccc';
+        console.log(c.name, c2.name);
+        console.log(c.getName())
+
+        **/
+
+    
+        // 构造函数继承
+
+        /**
+        function Parent(name) {
+            this.name = name;
+        }
+
+        Parent.prototype.getName = function() {
+            return this.getName;
+        }
+
+        function Child(name) {
+            Parent.call(this, name);
+        }
+
+        let c1 = new Child(1);
+        let c2 = new Child(2);
+
+        console.log(c1.name);
+
+        **/
+
+        // 组合式继承
+
+        /**
+        function Parent(name) {
+            this.name = name;
+        }
+
+        function Child(name) {
+            Parent.call(this, name);
+        }
+
+        Child.prototype = new Parent();
+
+        let c1 = new Child(1);
+        let c2 = new Child(2);
+        **/
+
+        /**
+        function Parent(name) {
+            this.name = name;
+        }
+
+        function Child(name) {
+            Parent.call(this, name);
+        }
+
+        // Child.prototype = Parent.prototype;
+
+        // 为了避免子类修改原型影响到父类，使用浅拷贝的方式
+        Child.prototype = Object.assign(Parent.prototype);
+
+        **/
+
+        /**
+        // 手写new
+
+        function myNew() {
+            // 生成一个新的对象实例
+            let obj = Object.create();
+
+            // 构造函数
+            // let constructor = [...arguments].slice(0, 1);
+            let constructor = Array.prototype.shift.call(arguments);
+
+            // 将新生成的实例对象的原型指向构造函数
+            obj.__proto__ = constructor.prototype;
+
+            // 改变构造函数的this的指向
+            constructor.call(obj, ...arguments);
+
+            // 返回实例对象
+            let ret = constructor.call(obj, ...arguments);
+
+            return typeof ret === 'object' ? ret : obj;
+
+        }
+
+        **/
+
+        /**
+        // 手写实现setInterval
+        function mySetInterval(fn, time = 1000) {
+            let timer = null;
+            let isClear = false;
+
+            function interval() {
+                // 当isClear设置为true的时候，停止该定时器的调用
+                if (isClear) {
+                    isClear = false;
+                    clearTimeout(timer);
+                    return;
+                }
+
+                fn();
+
+                //  递归调用
+                timer = setTimeout(interval, time);
+            }
+
+            timer = setTimeout(interval, time);
+
+            return () => {
+                isClear = true;
+            }
+        }
+
+        let ret = mySetInterval(() => {
+            console.log('222')
+        }, 1000)
+
+        setTimeout(() => {
+            ret();
+        }, 5000)
+
+        **/
+
+
+        // 数组 & 树
+        /**
+        let arr = [
+            { id: 0, pId: null, children: [
+                { id: 1, pId: 0, children: [
+                    { id: 2, pId: 1, children: [] },
+                    { id: 3, pId: 1, children: [] }
+                ] },
+                { id: 4, pId: 0, children: [] }
+            ] },
+        ]
+
+        // 树转数组,递归children
+        function fn(obj, res = []) {
+            // 先添加当前的元素
+            res.push(obj);
+
+            if (obj.children && obj.children.length) {
+                for (const item of obj.children) {
+                    fn(item, res);
+                }
+            }
+        }
+
+        let res = [];
+        fn(arr[0], res);
+        console.log(res)
+
+
+        let arr1 = [
+            { id: 0, pId: null, children: [] },
+            { id: 1, pId: 0, children: [] },
+            { id: 2, pId: 0, children: [] },
+            { id: 3, pId: 1, children: [] }
+        ]
+
+        function addToTree(list, pId) {
+            let flag = list.filter(item => item.pId === pId);
+
+            return flag.length === 0 ? [] : flag.map(item => {
+                let obj = {
+                    id: item.id, pId: item.pId, children: addToTree(list, item.id)
+                };
+
+                return obj.children.length === 0 ? { id: obj.id, pId: obj.pId } : obj;
+            })
+        }
+
+        let newArr = addToTree(arr1, null);
+
+        console.log(newArr)
+
+        **/
+
+        /**
+         * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。 有效字符串需满足：
+
+            左括号必须用相同类型的右括号闭合。
+            左括号必须以正确的顺序闭合。
+
+            考察对 栈 数据结构的掌握
+
+            首先：字符串的长度一定要是偶数
+            其次：右括号前面要有左括号才能匹配上
+        **/
+        let str = `[{()}]`;
+
+        // 暴力消除：
+
+        function isMatch(str) {
+            // 空字符串 或者 字符长度不为偶数，直接返回false
+            if (!str || str.length % 2 !== 0) {
+                return false;
+            }
+
+            let arr = ['(', ')', '{', '}', '[', ']'];
+            let retArr = [];
+
+            let newStr = str;
+
+            while (true) {
+                let len = str.length;
+                str = str.replace('()', '').replace('[]', '').replace('{}', '');
+                
+                if (len === str.length) {
+                    return len === 0;
+                }
+            }
+        }
+
+        // 栈解题法：
+
+        function isMatch2(str) {
+            // 空字符串 或者 字符长度不为偶数，直接返回false
+            if (!str || str.length % 2 !== 0) {
+                return false;
+            }
+
+            let stack = [];
+
+            let leftSide = ['(', '[', '{'];
+            let rightSide = [')', ']', '}'];
+
+            for (let i = 0; i < str.length; i++) {
+                if (leftSide.includes(str[i])) {
+                    // console.log(`stack -- push`);
+                    stack.push(str[i]);
+                }
+
+                if (rightSide.includes(str[i]) && stack[stack.length - 1] === leftSide[rightSide.indexOf(str[i])]) {
+                    // console.log(`stack -- pop`);
+                    stack.pop();
+                    i--;
+                }
+            }
+
+            if (!stack.length) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        let str1 = `()`;
+        let str2 = `()[]{}`;
+        let str3 = `(]`;
+        let str4 = `([)]`;
+        let str5 = `{[]}`;
+
+        // console.log('栈的解法：')
+
+        // console.log(isMatch2(str1));
+        // console.log(isMatch2(str2));
+        // console.log(isMatch2(str3));
+        // console.log(isMatch2(str4));
+        // console.log(isMatch2(str5));
+
+        // console.log('暴力循环法：');
+
+        // console.log(isMatch(str1));
+        // console.log(isMatch(str2));
+        // console.log(isMatch(str3));
+        // console.log(isMatch(str4));
+        // console.log(isMatch(str5));
+
+        function longestValidStr(str) {
+            // 空字符串 或者 字符长度不为偶数，直接返回0
+            if (!str) {
+                return 0;
+            }
+
+            let count = 0;
+            let newStr = str;
+
+            while (true) {
+                let len = str.length;
+                str = str.replace('()', '').replace('[]', '').replace('{}', '');
+                newStr = newStr.replace('()', '0').replace('[]', '0').replace('{}', '0');
+                if (len === str.length) {
+                    // 没有可以进行替换的了
+                    break;
+                }
+            }
+            console.log(newStr);
+
+            for(let i = 0; i < newStr.length; i++) {
+                if (newStr[i] != '0' && count != 0) break;
+                if (newStr[i] == '0') {
+                    count++;
+                }
+            }
+
+            return count * 2;
+        }
+
+        let strTest = '(()';
+        console.log(longestValidStr(strTest));
+
+
+
+        var longestValidParentheses = function(s) {
+            let max = 0
+            if (s.length < 1) return max
+
+            let len = s.length
+
+            // 栈顶之所有加入一个-1,纯粹是为了方便计算有效括号的长度
+            // 不然就需要手动调整为i-j+1;同时而确保第一个字符为")"时不需要特殊处理
+            let stack = [-1]
+
+            for(let i = 0; i < len; i++) {
+                let value = s[i]
+                if (value === '(') {
+                    stack.push(i)
+                } else if (value === ')') {
+                    stack.pop()
+
+                    // 栈顶加入一个pivot字符")",实际上是方便计算有效括号串长度
+                    if (stack.length < 1) {
+                        stack.push(i)
+                    } else {
+                        max = Math.max(max, i - stack[stack.length - 1])
+                    }
+                }
+            }
+
+
+            return max
+        };
+
+
+        </script> -->
+    </body>
+</html>
