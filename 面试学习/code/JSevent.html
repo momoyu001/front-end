@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .parent {
+
+        }
+
+        .children {
+            width: 200px;
+            height: 100px;
+            margin-top: 10px;
+            border: 1px solid #ff0000;
+        }
+    </style>
+
+    <script src="./proto.js"></script>
+</head>
+<body>
+    <div class="parent" id="parent_dom">
+        <div class="children" id="chidlren_1">1</div>
+        <div class="children" id="chidlren_2">2</div>
+        <div class="children" id="chidlren_3">3</div>
+        <div class="children" id="chidlren_4">4</div>
+        <div class="children" id="chidlren_5">5</div>
+    </div>
+
+    <script>
+        // 事件冒泡和捕获
+        function clickEventParent(e) {
+            const { target, currentTarget } = e;
+            const { innerHTML } = target;
+            console.log('父节点的事件。。。', innerHTML, target, currentTarget);
+        }
+
+        function clickEventChildren(e) {
+            const { target, currentTarget } = e;
+            const { innerHTML } = target;
+            console.log('子节点的事件。。。', innerHTML, target, currentTarget);
+            e.stopPropagation();
+        }
+
+        // 第三个参数 ，默认false，事件会执行冒泡，为true则执行捕获
+        let parentDom = document.getElementById('parent_dom');
+        parentDom.addEventListener('click', clickEventParent, false);
+
+        // 子节点的
+        let children1 = document.getElementById('chidlren_1')
+        children1.addEventListener('click', clickEventChildren, false);
+
+        let children2 = document.getElementById('chidlren_2')
+        children2.addEventListener('click', clickEventChildren, false);
+        
+        let children3 = document.getElementById('chidlren_3')
+        children3.addEventListener('click', clickEventChildren, false);
+
+        let children4 = document.getElementById('chidlren_4')
+        children4.addEventListener('click', clickEventChildren, false);
+
+        let children5 = document.getElementById('chidlren_5')
+        children5.addEventListener('click', clickEventChildren, false);
+    </script>
+</body>
+</html>

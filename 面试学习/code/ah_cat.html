@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏~小猫钓鱼</title>
+</head>
+<body>
+    <script>
+        /**
+         * 小猫钓鱼游戏：
+         * 两个队列模拟参与游戏的两人
+         * 一个栈模拟桌面上已出的牌
+         * **/
+
+        let q1 = [1, 4, 5, 3, 7, 2, 8, 9, 6];
+        let tail1 = 8;
+        let head1 = 0;
+        let q2 = [6, 8, 4, 2, 1, 5, 9, 4, 3];
+        let tail2 = 8;
+        let head2 = 0;
+        let stack = [];
+        let top = 0;
+        // 存储当前已出的牌，用于方便的判断，此刻出的牌能否赢牌
+        let book = [];
+        let t;
+
+        // 当两个队列都不为空的时候执行
+        while(head1 < tail1 && head2 < tail2) {
+            // 出牌
+            t = q1[head1];
+            // 判断当前打出的牌，是否能赢牌
+            // 没有赢牌，q1队列减少一张牌，book增加一张牌
+            if (!book[t]) {
+                head1++;
+                book[t] = 1;
+                stack[top] = t;
+                top++;
+            } else {
+                // 赢牌了
+                head2++;
+                q1.push(t);
+                tail1++;
+            
+                while(stack[top] != t) {
+                    q1.push(stack[top]);
+                    tail1++;
+                    top--;
+                    book[stack[top]] = 0;
+                }
+            }
+
+            if (head1 == tail1) break;
+
+            // 出牌
+            t = q2[head2];
+            // 判断当前打出的牌，是否能赢牌
+            // 没有赢牌，q1队列减少一张牌，book增加一张牌
+            if (!book[t]) {
+                head2++;
+                book[t] = 1;
+                stack[top] = t;
+                top++;
+            } else {
+                // 赢牌了
+                head2++;
+                q1.push(t);
+                tail2++;
+            
+                while(stack[top] != t) {
+                    q2.push(stack[top]);
+                    tail2++;
+                    top--;
+                    book[stack[top]] = 0;
+                }
+            }
+
+            if (head2 == tail2) {
+                console.log('q2 win');
+            } else {
+                console.log('q1 win');
+            }
+        }
+    </script>
+</body>
+</html>

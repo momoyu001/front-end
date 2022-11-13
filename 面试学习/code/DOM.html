@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM操作</title>
+</head>
+<body>
+    <div id="content"></div>
+    <div id="app"></div>
+    <div class="class-test">1</div>
+    <div class="class-test">2</div>
+    <div class="class-test">3</div>
+    <div class="box1" style="margin-top: 100px;">
+        <div class="box-child-1">23123</div>
+        <div class="box-child-2" style="opacity: 0; display: none">我是被隐藏的文本</div>
+    </div>
+    <script>
+        /**
+            DOM操作练习
+        **/
+
+        // 创建节点 - createElement
+        let dom1 = document.createElement('div');
+        dom1.innerHTML = 'JS创建的DIV标签';
+        let text1 = document.createTextNode('JS创建的文本节点');
+
+        document.getElementById('content').append(dom1);
+        document.getElementById('content').append(text1);
+
+        // 文档碎片：表示一种轻量级的文档，主要是用来存储临时节点，然后把文档碎片的内容一次性添加到DOM中。
+        // 当请求吧一个fragment插入文档树时，插入的不是ducumentFragment，而是它自身的所有子孙节点。
+        let dom2 = document.createElement('div');
+        dom2.innerHTML = 'JS创建的DIV标签-2';
+        let text2 = document.createTextNode('JS创建的文本节点-2');
+
+        let fragment = document.createDocumentFragment();
+        fragment.append(dom2);
+        fragment.append(text2);
+
+        document.getElementById('app').append(fragment);
+
+        // 创建属性节点 - createAttribute
+        let attr1 = document.createAttribute('testProp');
+        console.log(attr1)
+        dom1.setAttribute('test', attr1)
+
+        // querySelector - 传入 任何 有效的CSS选择器，既可以选中单个的DOM元素
+        let testClassDom1 = document.querySelector('.class-test');
+
+        console.log(testClassDom1);
+
+        // querySelectorAll - 返回与参数匹配的Element节点列表，是一个NodeList静态实例，是一个静态的快照，而非实时的查询
+        let testClassAll = document.querySelectorAll('.class-test');
+        console.log([...testClassAll]);
+
+        // innerText 无法设置标签，只会形成文本
+        dom1.innerText = '<span>123</span>'
+
+        let box1Text1 = document.getElementsByClassName('box-child-2')[0].innerText;
+        let box1Text2 = document.getElementsByClassName('box-child-2')[0].textContent;
+
+        console.log(box1Text1);
+        console.log(box1Text2);
+
+        // 删除后的节点虽然不在文档树中了，但是其实还在内存中，可以随时被添加到别的位置
+    </script>
+</body>
+</html>

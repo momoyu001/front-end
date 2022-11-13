@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue响应式原理</title>
+</head>
+<body>
+    <script>
+
+        class Observe {
+            constructor(value) {
+                this.walk(value);
+            }
+
+            walk(data) {
+                // 对象上的所有属性依次进行观测
+                let keys = Object.keys(data);
+
+                for (let i = 0; i < keys.length; i++) {
+                    let key = keys[i];
+                    let value = data[key];
+                    defineReactive(data, key, value);
+                }
+            }
+        }
+
+        // Object.defineProperty数据劫持核心，兼容性在IE9以上
+        function defineReactive(data, key, value) {
+            // 递归的关键
+            observe(value);
+
+            // 如果value还是一个对象，会继续走一遍defineReactive，层层遍历一直到value不是对象才停
+
+            Object.defineProperty(data, key, {
+                get() {
+                    console.log('获取值。。。');
+
+                    // 这里有处理依赖收集的过程。。。。。省略了。。。
+
+                    return value;
+                },
+
+                set(newValue) {
+                    if (newValue === value) return;
+                    console.log('设置值');
+
+                    // 需要做派发更新过程。。。。。省略了。。。
+
+                    value = newValue;
+                }
+            })
+        }
+
+        export function observe(value) {
+            // 如果传过来的是对象或者数组 进行属性劫持
+            if (Object.prototype.toString.call(value) === '[object object]' || Array.isArray(value)) {
+                return new Observe(value);
+            }
+        }
+
+    </script>
+</body>
+</html>

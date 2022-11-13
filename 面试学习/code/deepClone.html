@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手写实现深拷贝</title>
+</head>
+<body>
+    <script>
+        function deepClone(obj, hash = new WeakMap()) {
+            // 如果是null或者undefined就不拷贝
+            if (obj === null) return;
+            // 如果是日期对象，返回一个新的日期对象
+            if (obj instanceof Date) return new Date(obj);
+            // 如果是正则对象，返回一个新的正则对象
+            if (obj instanceof RegExp) return RegExp(obj);
+
+            // 如果是基本类型的数据，可以直接返回，不需要拷贝
+            if (typeof obj !== 'object') return obj;
+
+            // 用hash来进行唯一性校验，防止循环引用
+            if (hash.get(obj)) return hash.get(obj);
+
+            let cloneObj = new obj.constructor();
+            hash.set(obj, cloneObj);
+
+            for(let key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    // 递归的拷贝
+                    cloneObj[key] = deepClone(obj[key], hash);
+                }
+            }
+
+            return cloneObj;
+        }
+
+        let obj1 = {
+            name: 'name1',
+            age: 18
+        }
+
+        let obj2 = deepClone(obj1);
+
+        let obj3 = obj1;
+
+        obj1.name = 'test';
+
+        console.log('obj1的name', obj1.name);
+        console.log('obj2的name', obj2.name);
+        console.log('obj3的name', obj3.name);
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+
+        // let没有变量提升，用let声明的变量，不会默认成为window的属性
+        let name = '我是全局的name';
+
+        window.name = '我是window的name';  
+        
+        let age = 120;
+
+        // var 声明变量有变量提升，默认会成为window的属性。
+        var number = 20;
+
+        let originObj = {
+            name: '改变后的的对象name'
+        }
+
+        function testFunc() {
+            // 
+            console.log('我输出啦。。。。', this.name, ...arguments);
+            console.log(this)
+
+            // 这个局部 var声明的变量不会成为window的属性
+            var testVar = 33333;
+        }
+
+        testFunc(1);
+
+        // 改变this的指向
+        testFunc.call(originObj, 2, 3);
+
+        testFunc.apply(originObj, [4, 5]);
+
+        testFunc.bind(originObj, 6, 7)();
+
+        let latestObj = new testFunc(originObj, 8, 9);
+    </script>
+
+</body>
+</html>

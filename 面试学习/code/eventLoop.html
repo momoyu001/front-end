@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件循环</title>
+</head>
+<body>
+    <script>
+        // 整个script代码段是一个宏任务
+
+        // 异步宏任务
+        setTimeout(function() {
+            console.log('1');
+        }, 0)
+
+        async function async1() {
+            console.log('2');
+            const data = await async2();
+            console.log('3');
+            return data;
+        }
+
+        async function async2() {
+            return new Promise((resolve) => {
+                // 创建promise实例时的代码，同步的
+                console.log('4');
+                resolve('async2的结果');
+            }).then((data) => {
+                // 。then 微任务
+                console.log('5');
+                return data;
+            })
+        }
+
+        /** 
+         * 
+         * 调用async1
+         * 首先第一行输出 2  
+         * 第二行await，等到async2指向完成有返回值，再往下走，现在 去看async2的代码
+         * 
+         * async2 
+         * 首先输出 4
+         * resolve  async2的结果  即 async1 中的 data的值
+         * then 是微任务，进入了任务队列，接着向下走
+         * 
+         * **/
+        async1().then((data) => {
+            console.log('6');
+            console.log(data);
+        })
+
+
+        // 输出  7  - 同步的
+        new Promise(function(resolve) {
+            // 同步的
+            console.log('7');
+        }).then(function() {
+            // .then 是微任务，但是这个promise没有resolve，不会进入这个then里面
+            console.log('8');
+        })
+
+        // 同步的：2 4 7
+        // 微任务：5 3   async1 有返回值了，它的then又加入微任务队列，继续往下走  没有啦，8不会输出
+        // 宏任务setTimeout 1
+        // 微任务 6 async2的结果
+
+        // 最终结果：2 4 7 5 3 1 6 async2的结果    QAQ --- 错啦 
+        // 正确的结果是：2 4 7 5 3 6 async2 的结果 1
+
+        // 调用async1的时候，它的 .then 里面的程序就会加入任务队列。总的来说就是  script同步代码（执行栈）  任务队列中的微任务  setTimeout异步宏任务
+
+    </script>
+</body>
+</html>

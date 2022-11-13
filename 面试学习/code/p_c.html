@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组转树</title>
+</head>
+<body>
+    <script>
+        /**
+         * 数组转树形结构的处理：
+         * 
+         * **/
+
+        let arr = [
+            {
+                id: 1,
+                pId: null,
+                name: '1',
+                children: []
+            },
+            {
+                id: 2,
+                pId: 1,
+                name: '2',
+                children: []
+            },
+            {
+                id: 3,
+                pId: 4,
+                name: '3',
+                children: []
+            },
+            {
+                id: 4,
+                pId: 1,
+                name: '4',
+                children: []
+            },
+            {
+                id: 5,
+                pId: 8,
+                name: '5',
+                children: []
+            }
+        ]
+
+        function listToTree(oldArr) {
+            oldArr.forEach(element => {
+                let parentId = element.pId;
+                if (parentId) {
+                    oldArr.forEach(ele => {
+                        if (ele.id === parentId) {
+                            console.log('匹配。。。。')
+                            // 当内层循环ID == 外层循环的pId时，说明有children，需要往内层id里建个children并push
+                            if (!ele.children) {
+                                ele.children = [];
+                            }
+
+                            ele.children.push(element);
+                        }
+                    })
+                }
+            });
+
+            console.log(oldArr)  //此时的数组是在原基础上补充了children;
+
+            oldArr = oldArr.filter(ele => ele.pId === null);
+            console.log(oldArr);
+            return oldArr;
+        }
+
+        // listToTree(arr);
+
+
+        function addToTree(list, pId) {
+            let flag = list.filter(item => item.pId === pId);
+            console.log(flag);
+
+            return flag.length === 0 ? [] : flag.map(item => {
+                let obj = { id: item.id, pId: item.pId, children: addToTree(list, item.id) };
+                return obj.children.length === 0 ? { id: obj.id, pId: obj.pId } : obj;
+            })
+        }
+
+
+        let newArr = addToTree(arr, null);
+
+        console.log(newArr);
+
+        let tree =
+            {
+                id: 1, 
+                children: [
+                    {
+                        id: 2,
+                        children: [
+                            {
+                                id: 3
+                            },
+                            {
+                                id: 4
+                            }
+                        ]
+                    },
+                    {
+                        id: 5
+                    }
+                ]
+            }
+
+        /**
+         * 树形结构扁平化：
+         * 1、递归
+         * 2、循环
+         * **/
+
+        function fn(obj, res = []) {
+            // 当前元素先入栈
+            res.push(obj);
+
+            if (obj.children && obj.children.length) {
+                // 当前元素存在children这个属性且该属性值不为空，继续递归children
+                for (const item of obj.children) {
+                    fn(item, res);
+                }
+            }
+
+            return res
+        }
+
+        const res = [];
+        fn(tree, res);
+        console.log(res);
+
+        // 循环的方式，使用到了栈的特点，先进后出
+        function stackArr(obj) {
+            let stack = []; // 模拟栈
+            let res = []; // 接收结果
+            stack.push(obj); // 将初始元素 压入栈
+            while(stack.length) {
+                //  当栈中还有数据的时候，
+
+                const item = stack[0]; // 取出栈顶元素
+                res.push(item);
+                stack.shift(); // 出栈
+
+                if (item.children && item.children.length) {
+                    // 有子元素的，子元素也入栈
+                    stack.push(...item.children);
+                }
+            }
+
+            return res;
+        }
+
+        console.log(stackArr(tree));
+
+    </script>
+</body>
+</html>
