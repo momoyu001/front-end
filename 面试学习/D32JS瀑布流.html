@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS瀑布流</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+        html,body,#box {
+            width: 100%;
+            height: 100%;
+        }
+        .item {
+            width: 200px;
+            position: absolute;
+            background-size: 100% 100%;
+            border: 1px solid #d3d3d3;
+            border-radius: 4px;
+        }
+
+        .color1 {
+            background-color: #ff0000;
+        }
+
+        .color2 {
+            background-color: #ff00ff;
+        }
+
+        .color3 {
+            background-color: #ffff00;
+        }
+
+        .color4 {
+            background-color: #00ff00;
+        }
+
+        .color5 {
+            background-color: blue;
+        }
+
+        .color6 {
+            background-color: gray;
+        }
+
+        .color7 {
+            background-color: pink;
+        }
+
+        .color8 {
+            background-color: #dedede;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <img class="item" style="height: 120px" src="../img/menu1.png"></img>
+        <img class="item" style="height: 300px" src="../img/menu2.png"></img>
+        <img class="item" style="height: 200px" src="../img/menu3.png"></img>
+        <img class="item" style="height: 180px" src="../img/menu4.png"></img>
+        <img class="item" style="height: 130px" src="../img/menu5.png"></img>
+        <img class="item" style="height: 200px" src="../img/menu6.png"></img>
+        <img class="item" style="height: 180px" src="../img/menu7.png"></img>
+        <img class="item" style="height: 130px" src="../img/home1.png"></img>
+        <img class="item" style="height: 180px" src="../img/home2.png"></img>
+        <img class="item" style="height: 120px" src="../img/home3.png"></img>
+        <img class="item" style="height: 140px" src="../img/home4.png"></img>
+        <img class="item" style="height: 200px" src="../img/menu1.png"></img>
+        <img class="item" style="height: 180px" src="../img/menu3.png"></img>
+        <img class="item" style="height: 130px" src="../img/menu5.png"></img>
+    </div>
+
+    <script>
+
+        var box = document.getElementById('box');
+        var items = box.children;
+        var gap = 10;
+
+        window.onload = function() {
+            waterFall();
+
+            function waterFall() {
+                // 视口的宽度
+                var pageWidth = getClient().width;
+                var itemWidth = items[0].offsetWidth;
+                // column
+                var columns = parseInt(pageWidth / (itemWidth + gap));
+
+                // 存放高度的数组
+                var arr = [];
+                for (let i = 0; i < items.length; i++) {
+                    if (i < columns) {
+                        // 第一行
+                        items[i].style.top = 0;
+                        items[i].style.left = (itemWidth + gap) * i + 'px';
+                        arr.push(items[i].offsetHeight);
+                    } else {
+                        // 其他行：需要第一行的最小高度、索引
+                        var minHeight = arr[0];
+                        var index = 0;
+
+                        for (let j = 0; j < arr.length; j++) {
+                            if (minHeight > arr[j]) {
+                                minHeight = arr[j];
+                                index = j;
+                            }
+                        }
+
+                        // 设置下一行第一个盒子的位置；top就是高度
+                        items[i].style.top = arr[index] + gap + 'px';
+                        // left
+                        items[i].style.left = items[index].offsetLeft + 'px';
+
+                        // 改变最小列高度
+                        arr[index] = arr[index] + items[i].offsetHeight + gap;
+                    }
+                }
+            }
+
+            function getClient() {
+                return {
+                    width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+                    height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+                }
+            }
+
+            function getScrollTop() {
+                return window.pageYOffset || document.documentElement.scrollTop;
+            }
+
+            window.addEventListener('resize', function() {
+                waterFall();
+            })
+
+            // 滚动时请求图片
+            window.onscroll = function() {
+                console.log('1212')
+                console.log(getScrollTop())
+                console.log(getClient().height);
+                // 判断条件：滚动的高度 + 视口的高度 > 图片的offsetTop
+                if (getClient().height + getScrollTop() >= items[items.length - 1].offsetTop) {
+                    var datas = [
+                        '../img/menu1.png',
+                        '../img/menu2.png',
+                        '../img/menu3.png',
+                        '../img/menu4.png',
+                        '../img/menu5.png',
+                        '../img/menu6.png',
+                        '../img/menu7.png',
+                        '../img/home1.png',
+                        '../img/home2.png',
+                        '../img/home3.png',
+                        '../img/home4.png',
+                        '../img/menu1.png',
+                        '../img/menu3.png',
+                        '../img/menu5.png'
+                    ]
+
+                    for (let i = 0; i < datas.length; i++) {
+                        console.log('6878')
+                        var img = document.createElement('img');
+                        img.className = 'item';
+                        img.setAttribute('src', datas[i]);
+                        box.appendChild(img);
+                    }
+
+                    waterFall();
+                }
+            }
+        }
+
+    </script>
+
+    <!-- 
+        ## 瀑布流 - 绝对定位实现的
+        - 定位后确定浏览器显示区域内，一行能放多少列图片盒子
+            - 获取页面的宽度
+            - 获取图片盒子的宽度
+            - 显示的列数 = 页面宽度 / 图片盒子宽度
+            - column = pageWidth / itemWidth
+        - 为了显示美观，一般会给每一项加上一个空隙
+            - 显示的列数 = 页面宽度 / (图片盒子宽度 + 间隙)
+            - column = pageWidth / (itemWidth + gap)
+        - 确定列数之后，排列第一列
+            - 首先排第一列，for循环中判断，当 i < column 的时候，说明在第一行
+            - 知道在第一行之后，动态设置每一个图片盒子的left就可以排在第一行
+            - left = i * (itemWidth + gap);
+        - 第一行排列之后，获取第一行所有图片盒子的高度
+            - 获取高度用于排列第二行时需要考虑的top值
+            - 获取图片高度的时候，程序要写在onload里面，因为图片在页面加载完了之后才会取请求
+        - 排列第二行
+            - 获取到第一行中高度最小的那一列，将第二行的第一个图片盒子放在它下面 left = 最小列的offsetLeft；top = height
+            - 记录下最小高度列的index
+            - 设置完成之后，会发现所有的图片都叠在这个高度最小列下面，因为此时最小高度还没改变
+            - 实时改变最小高度
+        - 改变最小列当前高度
+            - 当前高度最小列的高度 = 当前高度最小列的高度 + 间隙 + 下面图片盒子的高度
+        - 触发resize事件
+            - 将整个设置样式部分封装成一个函数，在onload里面注册一个resize事件，只要页面已发生改变，就触发样式部分到的代码
+     -->
+</body>
+</html>

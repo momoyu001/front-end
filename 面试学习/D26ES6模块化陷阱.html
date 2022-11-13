@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6模块化陷阱</title>
+</head>
+<body>
+        
+    <script>
+        const person = {
+            name: 'lily'
+        }
+
+        Object.defineProperty(person, 'age', { value: 21, configurable: true });
+
+        console.log(person);
+        console.log(Object.keys(person));   // ['name'] enumerable默认为false，不可枚举
+
+        Object.defineProperty(person, 'hobby', { value: 'eat', enumerable: true });
+        console.log(Object.keys(person));   // ['name', 'hobby']
+        delete person.age;  // 有了configurable 该属性可以被删除
+        console.log(person)
+    </script>
+
+    <!-- 
+        ### 题目1  在vue项目中尝试
+        // counter.js
+        let counter = 10;
+        export default counter;
+
+        // App.vue
+        import myCounter from './couter.js';
+        mounted() {
+            myCounter += 1;
+            console.log(myCounter);
+        }
+
+        // 以上代码输出什么？？？
+        // Error  -- 报错了，因为没有myCounter这个变量，执行myCounter = myCounter + 1的时候会报错
+
+        mounted() {
+            var myCounter = myCounter + 1;
+            console.log(myCounter); // NaN
+            // 在函数里面，作用域的关系，等号右边的myCounter变量提升，undefined，导致打印出NaN;
+        }
+
+        ### 题目2
+        const person = {
+            name: 'lily'
+        }
+
+        Object.defineProperty(person,'age', { value: 21 });
+
+        console.log(person);
+        console.log(Object.keys(person));   // name ？？？
+
+
+     -->
+
+    <!-- 
+        ### Object.defineProperty
+        - 给对象添加一个新的属性，或者时对原有属性的修改
+        - 创建对象属性的时候，一般是字面量创建，如果要对属性进行定制化的，就要用到Object.defineProperty来处理
+        - 参数：
+            - obj           操作对象
+            - prop          操作对象的某个属性
+            - descriptor    属性的描述符
+        - 属性描述符：
+            - 分类 --- 两种都有公有属性和私有属性
+                - 数据描述符：直接使用value配置
+                - 存取描述符：可对数据存取进行中间操作（Vue2的双向绑定就是使用了这个特性）
+            - 公有属性 数据描述符合存取描述符都有的属性
+                - configurable: false   // 默认false，为true时，改属性描述符才可被改变，并且属性可被删除
+                - enumerable: false     // 默认false，为true时，该属性可枚举
+            - 私有属性 数据描述符合存取描述符两者不能同时存在的
+                - 数据描述符
+                    - value: undefined
+                    - writable: false   // 默认为false，为true时才能被改变赋值
+                - 存取描述符
+                    - get: function() {
+                        return value;
+                    }
+                    - set: function(newValue) {
+                        value = newvalue;
+                    }
+    -->
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .item {
+            width: 100px;
+            height: 100px;
+            background-color: #ff0000;
+            margin: 10px;
+        }
+        /* transition过渡示例，*/
+        .item1 {
+            transition: width 2s linear 0s, height 1s ease-in .1s;
+        }
+        .item1:hover {
+            height: 200px;
+            width: 200px;
+        }
+
+        /* animation动画示例 */
+        .item2 {
+            border: 15px solid black;
+            animation: changebox 1s ease-in-out 1s infinite alternate paused forwards;
+        }
+
+        .item2:hover {
+            animation-play-state: running;
+        }
+
+        @keyframes changebox {
+            10% {
+                background: red;
+            }
+            50% {
+                width: 80px;
+            }
+            70% {
+                border: 15px solid #ff00f0;
+            }
+            100% {
+                width: 180px;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="item item1"></div>
+    <div class="item item2"></div>
+    <div class="item item3"></div>
+    <div class="item item4"></div>
+    <div class="item item5"></div>
+</body>
+</html>

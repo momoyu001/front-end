@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组扁平化处理</title>
+</head>
+<body>
+    
+
+    <script>
+        const arr = [1, [2, [3, [4, 5]]], 6]
+        
+        // 1、原生JS flat 方法
+        console.log(arr.flat(Infinity));
+            // 有三层嵌套，也可直接传入3
+        console.log(arr.flat(3));
+
+        // 2、正则  转换成字符串，将所有的 [ ] 去掉
+        const arr2 = JSON.stringify(arr).replace(/\[|\]/g, '').split(',')
+        console.log(arr2);
+
+        // 3、正则改良版
+        console.log(JSON.parse('[' + arr2 + ']'));
+
+        // 4、使用reduce
+        const flatten = arr => {
+            // 参数：回调函数、初始值（初始值不传时为上一项pre）
+            return arr.reduce(
+                // pre 第一次是一个空数组，第二次是 回调函数的返回值
+                (pre, cur) => {
+                    return pre.concat(Array.isArray(cur) ? flatten(cur) : cur);
+                }, []
+            )
+        }
+        const arr4 = flatten(arr)
+        console.log(arr4);
+
+        // 5、函数递归
+        const arr5 = [];
+        const fn = arr => {
+            for (let i = 0; i < arr.length; i++) {
+                if (Array.isArray(arr[i])) {
+                    fn(arr[i])
+                } else {
+                    arr5.push(arr[i]);
+                }
+            }
+        }
+        fn(arr);
+        console.log(arr5)
+    </script>
+
+    <!-- 
+        ## 数组扁平化
+        ### 定义
+            是指将一个多维数组变为一个一维数组
+        ### 数组扁平化的方法
+            1、使用flat
+
+            2、利用正则
+
+            3、正则改良版本
+
+            4、使用reduce
+
+            5、函数递归
+
+     -->
+</body>
+</html>

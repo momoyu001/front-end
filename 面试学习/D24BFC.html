@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFC</title>
+    <style>
+        .father {
+            /* float: left; */
+            /* position: absolute; */
+            /* display: inline-block; */
+            overflow: hidden;
+        }
+        .son {
+            width: 300px;
+            height: 300px;
+            background-color: blue;
+            float: left;
+            margin-right: 5px;
+        }
+
+        .father1 {
+            width: 200px;
+            height: 300px;
+            background-color: yellow;
+            overflow: hidden;
+        }
+        .son1 {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            margin-top: 20px;
+        }
+
+        .son3 {
+            width: 200px;
+            height: 200px;
+            background-color: blue;
+            float: left;
+        }
+        .son3-last {
+            width: 200px;
+            height: 300px;
+            background-color: green;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class="father">
+        <div class="son"></div>
+        <div class="son"></div>
+        <div class="son"></div>
+    </div> -->
+
+    <!-- margin塌陷 -->
+
+    <!-- <div class="father1">
+        <div class="son1"></div>
+    </div> -->
+
+    <!-- 元素覆盖 -->
+    <div>
+        <div class="son3"></div>
+        <div class="son3"></div>
+        <div class="son3-last"></div>
+    </div>
+    <script>
+
+    </script>
+
+    <!-- 
+        ## BFC
+            块级格式化上下文，它是指一个独立的`块级渲染区域`，只有`块级盒子`参与，该区域拥有一套渲染规则来约束块级盒子的布局，且与区域外部无关
+        ## 如何创建BFC
+            1、float的值不为none
+            2、position的值不是static或者relative
+            3、display的值是inline-block、flex、inline-flex
+            4、overflow值不为visible
+
+            哪一种是最好的？？？ overflow: hidden 相对而言会比较好
+        ## BFC的其他作用
+            1、BFC可以取消盒子margin的塌陷
+            2、BFC可以阻止元素被浮动元素覆盖
+     -->
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+
+    </script>
+    <!-- 
+        1、性能：
+        从网站开始生成，到代码开始运行，消耗浏览器以及服务器的资源所需要的的一切资源，统称为性能.
+        2、如何来优化性能：（从浏览器的角度来看）
+            - 浏览器的缓存策略：
+                - 强缓存：
+                    - Cache-control：
+                        - public        标识响应可以被客户端和代理服务器缓存
+                        - private       标识响应可以只可以被客户端缓存
+                        - max-age=30    缓存30秒后过期，取药重新请求
+                        - s-maxage=30   覆盖max-age，作用一样，只在代理服务器中生效
+                        - no-store      不缓存任何响应
+                        - no-cache      资源被缓存但是立即失效，下次也会发起请求验证资源是否过期 - 协商缓存 304
+                        - max-stale=30  30秒内，即使缓存过期，也是用该缓存
+                        - min-fresh=30  希望在30秒内获取最新的响应
+                    - Expires： - 主要针对http到的，目前大部分用的https
+                        - 缓存过期时间，用来指定资源到期的时间，是服务端的 具体的时间点。也就是说， - Expires=max-age + 请求时间，需要和Last-modefied结合使用。
+                        - Expires是web服务器响应消息头字段，在响应http请求时告诉浏览器在过期时间前浏览器直接从缓存里面存取数据，而无需再次请求。需要使用到服务端时间和浏览器时间，若浏览器时间被篡改，则会判断出错
+                    - 强缓存的两个状态：
+                        - from memery cache：   从内存中取资源
+                        - from disk cache：     不访问服务器，之前已经从服务器访问过该资源，直接从硬盘上读取该资源，硬盘中的资源，不会随浏览器的关闭而清除
+                    - 强缓存的特性
+                        - code： 200
+                        - size： memory cache 或者 disk cache，从缓存中
+                        - time： 加载时间均为0秒，不消耗时间
+                - 协商缓存：304状态码
+                    - 协商缓存的特性
+                        - 如果缓存生效，http状态码为304
+                        - 如果缓存不生效，http状态码200，走正常的从服务端获取资源的流程
+                        
+                        - cache-control：no-cache
+                        - 资源不会被浏览器直接缓存，浏览器会去找服务端进行协商，询问服务器，当前资源是否需要从缓存中读取
+                        - If-None-Match / ETag ：标识
+                        - 浏览器在得知要走协商缓存的情况下，携带一个特定的标识(If-None-Match)，询问服务器，是否要从缓存中读取资源，如果服务端也存在当前标识，那么协商缓存生效，code为304，实际上是从缓存中取的资源
+                        - 协商缓存不生效，就会走正常的服务端请求资源
+
+
+                - 浏览器的缓存优先级大于服务器，同一个http头部字段，请求头和响应头都设置了话，请求头中的优先级更高
+                    - eg :  
+                        请求头：cache-control：no-cache
+                        响应头：cache-control：max-age=36000
+                        最终的效果是，no-cache
+                - 浏览器的Ctrl + F5，强制刷新，重新去服务器请求资源，将浏览器设置为不需要缓存 请求头中，cache-control：max-age=0
+                - 一般来说，从服务器上返回的js是动态资源，可能会较长改变的，所以浏览器在接收到这类文件时，若设置了缓存，浏览器就会将它放到memory cache中；如果是css，静态资源，浏览器会默认将它放在硬盘中
+
+    -->
+</body>
+</html>

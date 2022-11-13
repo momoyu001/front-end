@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发布订阅模式</title>
+</head>
+<body>
+    <script>
+        // ------- 版本1 --------
+
+        // // 定义发布者
+        // var shopObj = {}
+        // // 缓存列表，存放的是订阅的函数
+        // shopObj.list = [];
+
+        // // 增加订阅者
+        // shopObj.listen = function(fn) {
+        //     shopObj.list.push(fn);
+        // }
+
+        // // 发布消息 -- 遍历缓存列表
+        // shopObj.trigger = function () {
+        //     for (let i  = 0, fn; fn = this.list[i++];) {
+        //         fn.apply(this, arguments);
+        //     }
+        // }
+
+        // shopObj.listen(function(color, size) {
+        //     console.log('颜色是：', color);
+        //     console.log('尺码是：', size);
+        // })
+
+        
+        // shopObj.listen(function(color, size) {
+        //     console.log('再次监听 - 颜色是：', color);
+        //     console.log('再次监听 - 尺码是：', size);
+        // })
+
+        // // 此时，会把消息都发送了订阅了人 --- 解决方法 ---- key值
+        // // 小红
+        // shopObj.trigger('red', 42);
+
+        // // 小兰
+        // shopObj.trigger('blur', 40);
+
+
+        // -------  版本2 ---------
+        
+        // // 定义发布者
+        // var shopObj = {}
+        // // 缓存列表，存放的是订阅的函数
+        // shopObj.list = [];
+
+        // // 增加订阅者
+        // shopObj.listen = function(key, fn) {
+        //     if (!this.list[key]) {
+        //         this.list[key] = [];
+        //     }
+        //     this.list[key].push(fn);
+        // }
+
+        // // 发布消息 -- 遍历缓存列表
+        // shopObj.trigger = function () {
+        //     // 取出对应的key
+        //     var key = Array.prototype.shift.call(arguments);
+
+        //     var fns = this.list[key];
+        //     if (!fns || fns.length === 0) {
+        //         return
+        //     }
+
+        //     for (let i  = 0, fn; fn = fns[i++];) {
+        //         fn.apply(this, arguments);
+        //         // fn(...arguments)
+        //     }
+        // }
+
+        // shopObj.listen('red', function(size) {
+        //     console.log('尺码是：', size);
+        // })
+
+        
+        // shopObj.listen('blue', function(size) {
+        //     console.log('再次监听 - 尺码是：', size);
+        // })
+
+        // // 此时，会把消息都发送了订阅了人 --- 解决方法 ---- key值
+        // // 小红
+        // shopObj.trigger('red', 42);
+
+        // // 小兰
+        // shopObj.trigger('blue', 40);
+
+        // ------  版本3 -------
+
+        // var event = {
+        //     list: [],
+        //     listen: function(key, fn) {
+        //         if (!this.list[key]) {
+        //             this.list[key] = [];
+        //         }
+
+        //         this.list[key].push(fn);
+        //     },
+        //     trigger: function() {
+        //         // 取出对应的key
+        //         var key = Array.prototype.shift.call(arguments);
+
+        //         var fns = this.list[key];
+        //         if (!fns || fns.length === 0) {
+        //             return
+        //         }
+
+        //         for (let i  = 0, fn; fn = fns[i++];) {
+        //             // fn.apply(this, arguments);
+        //             fn(...arguments)
+        //         }
+        //     }
+        // }
+
+        // // 取消订阅
+        // event.remove = function (key, fn) {
+        //     var fns = this.list[key];
+
+        //     if (!fns) {
+        //         return false;
+        //     }
+
+        //     if (!fn) {
+        //         fn && (fns.length = 0)
+        //     } else {
+        //         for(var i = fns.length - 1; i > 0; i--) {
+        //             var _fn = fnd[i];
+        //             if (_fn == fn) {
+        //                 fns.splice(i, 1);
+        //             }
+        //         }
+        //     }
+        // }
+
+        // ------- 版本4 ---------
+        
+        // var Event = (function () {
+        //     var list = {};
+        //     var listen;
+        //     var trigger;
+        //     var remove;
+
+        //     listen = function(key, fn) {
+        //         if (!list[key]) {
+        //             list[key] = [];
+        //         }
+
+        //         list[key].push(fn);
+        //     };
+
+        //     trigger = function() {
+        //         // 取出对应的key
+        //         var key = Array.prototype.shift.call(arguments);
+
+        //         var fns = list[key];
+        //         if (!fns || fns.length === 0) {
+        //             return
+        //         }
+
+        //         for (let i  = 0, fn; fn = fns[i++];) {
+        //             // fn.apply(this, arguments);
+        //             fn(...arguments)
+        //         }
+        //     };
+
+        //     remove = function (key, fn) {
+        //         var fns = list[key];
+
+        //         if (!fns) {
+        //             return false;
+        //         }
+
+        //         if (!fn) {
+        //             fn && (fns.length = 0)
+        //         } else {
+        //             for(var i = fns.length - 1; i > 0; i--) {
+        //                 var _fn = fnd[i];
+        //                 if (_fn == fn) {
+        //                     fns.splice(i, 1);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // })()
+
+
+        // 
+
+    </script>
+
+    <!-- 
+        ## 发布订阅模式：
+            ### 1、含义：
+            
+            发布-订阅模式又叫观察者模式，他定义对象间的一种 * 一对多 * 的依赖关系，当一个对象的状态发生改变时，所有依赖于他的对象都将得到通知 ----  先发布再订阅
+
+            ### 2、作用：
+                1）支持简单的广播通信，当对象状态发生改变时，会自动通知已经订阅过的对象。
+
+                2）可以运用在异步编程中，替代回调函数，可以订阅ajax之后的事件，只需要订阅自己需要的部分（那么ajax调用发布之后订阅的就可以拿到消息了）（不需要关心对象在异步运行时候的状态）
+
+                3）对象之间的松耦合 两个对象之间相互都不了解彼此 但是 不影响通信 当有新的订阅者出现的时候 发布的代码无需改变 同样发布的代码改变 只要之前约定的事件名称没有改变 也不影响订阅
+
+                4）vue react 之间跨组件之间的传值
+            
+            ### 如何实现发布 -- 订阅模式
+                1、首先要想好谁是发布者
+                2、给发布者添加一个缓存列表，用于存放回调函数来通知订阅者
+                3、最后是发布消息，发布者遍历这个缓存列表，依次触发里面存放的订阅者回调函数。
+     -->
+</body>
+</html>

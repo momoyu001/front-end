@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON.stringfy</title>
+</head>
+<body>
+
+    <script>
+        let sym1 = Symbol.for('sym1');
+        let obj1 = {
+            name: undefined,
+            say: function () {
+                console.log('name')
+            },
+            [sym1]: '我是Symbol值'
+        }
+
+        let str1 = JSON.stringify(obj1);
+        console.log(str1);
+
+        let obj2 = {
+            name: 'name1',
+            age: 21,
+            firstName: '111',
+            lastName: '222'
+        }
+
+        // let str2 = JSON.stringify(obj2, ['name', 'age']);
+        // console.log(str2);  // { "name": "name1", "age": 21 }
+
+        let str3 = JSON.stringify(obj2, (key, value) => {
+            if (key) {
+                return value + '新加的'
+            } else {
+                return value;
+            }
+        });
+        // console.log(str3);
+
+        let arr1 = [
+            {
+                name: '123',
+                age: 12
+            },
+            {
+                name: '456',
+                age: 34,
+                test: undefined
+            }
+        ]
+
+        let str4 = JSON.stringify(arr1, (key, value) => {
+            return value
+        }, 4);
+        console.log(str4);
+
+        let arr2 = [undefined, '1111', null]
+        let str5 = JSON.stringify(arr2)
+        console.log(str5);
+
+        let arr3 = [new Number(12), new String(12), new Boolean(1)];
+        let str6 = JSON.stringify(arr3);
+        console.log(str6);
+
+        let obj3 = {
+            name: 'obj3Name',
+            age: 30,
+            toJSON() {
+                return '我有自己的toJSON方法'
+            }
+        }
+
+        let str7 = JSON.stringify(obj3);
+        console.log(str7);  // 我有自己的toJSON方法
+
+        // 判断一个对象是否存在循环引用
+        function cycle(obj, parent) {
+            // 所有父级的一个集合
+            let parentArr = parent || [obj];
+
+            //  循环当前对象
+            for (let i in obj) {
+                // 如果某一个属性的值是对象，做额外的判断并处理
+                if (typeof obj[i] === 'object') {
+                    // parentArr 是所有父级属性的集合，只要当前属性的值等于该集合中的某一个，就说明存在循环引用。
+                    // 存在循环引用的值，手动修改一下
+                    parentArr.forEach((item) => {
+                        if (item === obj[i]) {
+                            obj[i] = '[cycle]'
+                        }
+                    })
+
+                    // 递归调用自己
+                    cycle(obj[i], [...parentArr, obj[i]]);
+                }
+            }
+
+            return obj;
+        }
+
+        let a = {
+            b: {
+                c: {}
+            }
+        }
+
+        a.b.c = a;
+        // console.log(JSON.stringify(a));
+        console.log(cycle(a));
+
+    </script>
+</body>
+</html>

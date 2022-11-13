@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>节流函数的理解及实现</title>
+</head>
+<body>
+    <button id="button">点击</button>
+
+    <script>
+        function throate(func, wait) {
+            // 用来判断是否执行的变量，要保存它的状态，return一个function -- 闭包
+            let timeOut;
+
+            return function() {
+                // 第一次，进入if语句，timeOut有值，后面短时间内不会再触发，直到触发了之后，timeOut再次变为null
+                if (!timeOut) {
+                    timeOut = setTimeout(function() {
+                        func();
+                        timeOut = null;
+                    }, wait);
+                }
+            }
+        }
+
+        function handleClick() {
+            console.log(Math.random());
+        }
+
+        let button = document.getElementById('button');
+
+        let eventFunc = throate(handleClick, 2000);
+
+        button.addEventListener('click', function() {
+            // 点击一次，就执行一次节流的函数，可以实现节流的效果
+            eventFunc();
+            // 点击一次，就生成一个节流函数，不能实现节流的效果
+            // throate(handleClick, 2000)();
+        }, false);
+
+        // document.getElementById('button').onclick = throate(handleClick, 2000);
+
+    </script>
+    <!-- 
+        节流：当持续触发事件，保证一段时间内，只调用一次事件处理函数
+        应用：鼠标不断点击，规定n秒内多次点击只有一次有效。
+     -->
+</body>
+</html>

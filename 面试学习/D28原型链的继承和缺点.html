@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原型链的继承和缺点</title>
+</head>
+<body>
+    
+    <script>
+        // function Parent() {
+        //     this.name = '篮球';
+        // }
+
+        // Parent.prototype.getName = function() {
+        //     return this.name;
+        // }
+
+        // function Child() {
+
+        // }
+
+        // // 子类的原型对象指向父实例
+        // Child.prototype = new Parent();
+        // Child.prototype.constructor = Child;
+
+        // const child = new Child();
+        // // Child 本身没有name和getName，是从原型链里面找到的
+        // console.log(child.name);
+        // console.log(child.getName());
+
+
+        function Parent() {
+            this.name = ['篮球'];
+        }
+
+        Parent.prototype.getName = function() {
+            return this.name;
+        }
+
+        function Child() {
+
+        }
+
+        // 子类的原型对象指向父实例
+        Child.prototype = new Parent();
+        Child.prototype.constructor = Child;
+
+        const child1 = new Child();
+        const child2 = new Child();
+
+        child1.name[0] = '排球';
+
+        console.log(child1.name);
+        console.log(child2.getName());
+    </script>
+
+    <!-- 
+        ## 原型链的继承
+            - 原理：让子类的原型对象指向父类的实例，当子类的实例找不到对应的属性和方法时，会延续着原型对象（也就是它的父类）往上找
+            - 缺点：
+                - 多个实例指向同一个原型，其中一个有修改，会影响到另一个
+                - 没有实现super功能，对父类进行传参
+     -->
+</body>
+</html>

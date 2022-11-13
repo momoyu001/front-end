@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .test {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ff0000;
+            overflow-y: auto;
+            padding-top: 10px;
+            margin-top: 50px;
+        }
+
+        .test1 {
+            width: 250px;
+            height: 500px;
+            background-color: #030303;
+        }
+
+        .test2 {
+            width: 200px;
+            height: 200px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test">
+        <div class="test1"></div>
+    </div>
+    <div class="test2">
+
+    </div>
+    <script>
+        const test = document.querySelector('.test')
+
+        console.log('offset：')
+        console.log(test.offsetHeight, test.offsetWidth, test.offsetTop, test.offsetLeft)
+        console.log(test.offsetParent)
+        const test1 = document.querySelector('.test1')
+        console.log('offset：')
+        console.log(test1.offsetHeight, test1.offsetWidth, test1.offsetTop, test1.offsetLeft)
+        console.log(test1.offsetParent)
+        const test2 = document.querySelector('.test2')
+        console.log('隐藏的元素，返回0')
+        console.log(test2.offsetHeight)
+    </script>
+</body>
+</html>

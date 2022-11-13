@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS单例模式</title>
+    <style>
+        .block {
+            display: block !important;
+        }
+    </style>
+</head>
+<body>
+    <button id="button">登录</button>
+
+    <script>
+        /**
+         *  ----------ES5实现单例模式-----------------
+         * **/
+        // 立即执行函数
+        var loginLayer = (function (){
+            var div = document.createElement('div');
+            div.innerHTML = '我是登录的弹窗';
+            div.style.display = 'none';
+            document.body.appendChild(div);
+            return div;
+        })();
+
+        document.getElementById('button').onclick = function(e) {
+            // loginLayer.style.display = 'block';
+            loginLayer.classList.add('block');
+        };
+
+        // 点击的时候才创建这个dom
+        var createLoginLayer = function() {
+            var div;
+            return function () {
+                if (div) {
+                    return div;
+                } else {
+                    div = document.createElement('div');
+                    div.innerHTML = '我是登录的弹窗';
+                    div.style.display = 'none';
+                    document.body.appendChild(div);
+                    return div;
+                }
+            }
+        };
+
+        var loginLayer2 = createLoginLayer();
+        document.getElementById('button').onclick = function(e) {
+            loginLayer2().classList.add('block');
+        };
+
+        // 优化 : - 单一职责
+        // 获得单例
+        var getSingle = function (fn) {
+            var result;
+            return function () {
+                return result || (result = fn.apply(this, arguments));
+            }
+        }
+
+        // 具体的业务逻辑 - 登录框
+        var loginLayer3 = function (){
+            var div = document.createElement('div');
+            div.innerHTML = '我是登录的弹窗';
+            div.style.display = 'none';
+            document.body.appendChild(div);
+            return div;
+        };
+
+        var createSingleLogin = getSingle(loginLayer3);
+        document.getElementById('button').onclick = function () {
+            var loginLayer = createSingleLogin();
+            loginLayer.style.display = 'block';
+        }
+
+
+        /**
+         * ----------ES6实现单例模式--------------
+         * **/ 
+        // 见下一章
+    </script>
+
+    <!-- 
+        1、定义：只有一个实例，可以全局访问
+        2、主要解决：一个全局使用的类，频繁的创建和销毁
+        3、何时使用：当想要控制实例的数量，节省系统资源的时候
+        4、如何实现：判断系统是否已有这个单例，如果有则返回，没有则创建
+        5、优点：内存中只有一个实例，减少了内存的开销，尤其是频繁的创建和销毁实例（比如首页面的缓存 ）
+        6、使用场景：
+            1）全局的缓存
+            2）弹窗
+     -->
+    
+    <!-- 
+        ES5实现单例模式：使用闭包
+     -->
+    
+    <!-- 
+        ES6实现单例模式：不需要使用闭包
+            class 类，可以看做是ES5 构造函数 的语法糖
+
+    -->
+</body>
+</html>

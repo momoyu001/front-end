@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复杂度和简单排序算法</title>
+</head>
+<body>
+    
+    <script>
+        // 异或运算
+        let result1 = 0 ^ 10;
+        let result2 = 10 ^ 10;
+        // console.log(result1);   // 10
+        // console.log(result2);   // 0
+
+        // 交换两个数的值
+        let a = 12;
+        let b = 23;
+        a = a ^ b;
+        b = a ^ b;
+        a = a ^ b;
+        // console.log(a, b);
+
+
+        // let arr = [1, 2, 1, 2, 3, 4, 3, 5, 4];
+        // let eor = 0;
+        // for (let i = 0; i < arr.length; i++) {
+        //     eor = eor ^ arr[i];
+        // }
+
+        // console.log(eor);
+
+        let arr = [1, 1, 2, 2, 2, 3, 4, 4];
+        let eor = 0;
+        for (let i = 0; i < arr.length; i++) {
+            eor = eor ^ arr[i];
+        }
+
+        // 再次遍历异或数组，此时只异或，第八位不为1的数，只有某位数字的第八位不是1，才进行异或操作，最后eorT的值为 a 或者 b
+        let eorT;
+        let rightOne = eor & (~eor + 1);    // 提取出最右的1
+
+        for (let j = 0; j < arr.length; j++) {
+            if ((arr[j] & rightOne) == 0) {
+                eorT ^= arr[j]
+            }
+        }
+
+        // console.log(eor);
+        // console.log(eorT);
+
+
+        // 生成长度和值都随机的随机数的方法
+        function generateRandormArray(maxSize, maxValue) {
+            // Math.random() -> [0, 1)  所有的小数，等概率返回一个
+            // Math.random() * N -> [0, N)    所有小数，等概率返回一个
+            // parseInt(Math.random() * N) ->  [0, N - 1]  所有的整数， 等概率返回一个
+
+            // 长度随机
+            let arr = new Array(parseInt((maxSize + 1) * Math.random()));
+
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = parseInt((maxValue + 1) * Math.random()) - parseInt(maxValue * Math.random());
+            }
+
+            return arr;
+        }
+
+        // console.log(generateRandormArray(10, 100));
+
+        // 递归行为: 求解数组中的最大值
+        function process(arr, left, right) {
+            if (left === right) return arr[left];
+
+            let mid = left + ((right - left) >> 1);
+            
+            let leftMax = process(arr, left, mid);
+            let rightMax = process(arr, mid + 1, right);
+            return Math.max(leftMax, rightMax);
+        }
+
+        // console.log(process([1, 5, 98, 100, 23], 0, 4));
+
+        // 归并排序
+        let arrMerge = [1, 23, 89, 24, 56, 10, 61];
+
+        function mergeSort(arr, left, right) {
+            if (left === right) return;
+
+            let mid = left + ((right - left) >> 1);
+            mergeSort(arr, left, mid);
+            mergeSort(arr, mid + 1, right);
+            merge(arr, left, mid, right);
+        }
+
+        function merge(arr, left, mid, right) {
+            // 辅助空间，left ~ right下标
+            let newArr = Array(right - left + 1);
+            let i = 0;
+            let p1 = left;
+            let p2 = mid + 1;
+            // p1是左边部分的下标，p2是右边部分的下标，将原数组中元素，按大小排序放进辅助空间，p1 p2都在往后移动，总有一个时刻，p1或者p2会先越界
+            // p1 p2都不越界的情况下
+            while(p1 <= mid && p2 <= right) {
+                newArr[i++] = arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++];
+            }
+
+            // 当p1到达中点前时-没越界；如果p1没越界，就把p1剩下的东西拷贝 ---- （1）
+            while(p1 <= mid) {
+                newArr[i++] = arr[p1++];
+            }
+            // （1）和（2）实际上只会有一个执行，从上一个while出来的时候，一定是一个越界，一个不越界
+            // 当p2到达终点前时-没越界；如果p2没越界，就把p2剩下的东西拷贝 ----- （2）
+            while(p2 <= right) {
+                newArr[i++] = arr[p2++];
+            }
+
+            for (let i = 0; i < newArr.length; i++) {
+                arr[left + i] = newArr[i];
+            }
+
+        }
+
+        mergeSort(arrMerge, 0, arrMerge.length);
+        console.log(arrMerge);
+
+        // 小和问题
+        function smallSum(arr) {
+            if (arr === null || arr.length < 2) return 0;
+
+            return smallProcess(arr, 0, arr.length - 1);
+        }
+
+        // arr [l...r] 既要排好序也要求小和
+        function smallProcess(arr, l, r) {
+            if (l === r) {
+                return 0;
+            }
+
+            let mid = l + ((r - l) >> 1);
+            
+            // 左侧排序求小和的数量 + 右侧排序求小和的数量 + merge时产生的数量
+            return smallProcess(arr, l, mid) + smallProcess(arr, mid + 1, r) + mergeSmall(arr, l, mid, r);
+        }
+
+        function mergeSmall(arr, left, mid, right) {
+            let newArr = Array(right - left + 1);
+            let i = 0;
+            let p1 = left;
+            let p2 = mid + 1;
+            let res = 0;
+
+            while(p1 <= mid && p2 <= right) {
+                // 左边比右边小，才产生小和数量增加的行为
+                res += arr[p1] < arr[p2] ? (right - p2 + 1) * arr[p1] : 0;
+                newArr[i++] = arr[p1] <= arr[p2] ? arr[p1++] : arr[p2++];
+            }
+
+            while(p1 <= mid) {
+                newArr[i++] = arr[p1++];
+            }
+
+            while(p2 <= right) {
+                newArr[i++] = arr[p2++];
+            }
+
+            for (let i = 0; i < newArr.length; i++) {
+                arr[left + i] = newArr[i];
+            }
+
+            return res
+        }
+
+        console.log(smallSum(arrMerge, 0, arrMerge.length));
+        let arrSmall = [1, 2, 3, 4, 5];
+        console.log(smallSum(arr, 0, arr.length - 1));
+
+
+        // 快速排序
+        function quickSort(arr, L, R) {
+            if (L < R) {
+                // 等概率随机选一个位置，每一次都是随机的
+                swap(arr, L + parseInt(Math.random() * (R - L + 1)), R);
+                console.log('第一次随机选择位置并交换之后的arr: ', JSON.parse(JSON.stringify(arr)));
+                let arrSub = partition(arr, L, R);
+                console.log('等于区域的左右边界： ', arrSub);
+                quickSort(arr, L, arrSub[0] - 1);   // 小于区，递归
+                quickSort(arr, arrSub[1] + 1, R);   // 大于区，递归
+            }
+        }
+
+        /**
+         * 处理arr[L...R]的函数
+         * 默认以arr[r]做划分
+         * 返回等于区域(左边界、右边界)，所以返回一个长度为2的数组res，
+         * **/
+        function partition(arr, L, R) {
+            console.log('交换位置前的arr', JSON.parse(JSON.stringify(arr)));
+            console.log(L, R)
+            let less = L - 1;   // 小于区右边界
+            let more = R;       // 大于区左边界
+
+            // L表示当前的位置，arr[R]是划分值
+            while (L < more) {
+                if (arr[L] < arr[R]) {
+                    // 小于 区域左边界加一，i加一
+                    swap(arr, ++less, L++);
+                } else if (arr[L] > arr[R]) {   // 当前数 >  划分值
+                    swap(arr, --more, L);
+                } else {    // 等于的情况，加一
+                    L++;
+                }
+            }
+
+            swap(arr, more, R);
+            console.log('交换过位置之后的arr： ', arr)
+            return [less + 1, more];
+        }
+
+        // 交换两个数的位置
+        function swap(arr, L, R) {
+            let num1 = arr[L];
+            arr[L] = arr[R];
+            arr[R] = num1;
+        }
+
+        let arrQuick = [1, 23, 12, 30, 20];
+        quickSort(arrQuick, 0, arrQuick.length - 1);
+        console.log(arrQuick);
+    </script>
+</body>
+</html>

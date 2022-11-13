@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS的事件循环机制-EventLoop</title>
+</head>
+<body>
+    
+    <script>
+        // function fun1() {
+        //     console.log('1');
+        // }
+
+        // function fun2() {
+        //     console.log('2');
+        //     fun1();
+        //     console.log('3');
+        // }
+
+        // function fun1() {
+        //     console.log('1');
+        // }
+
+        // function fun2() {
+        //     setTimeout(() => {
+        //         // 加入到消息队列中，调用栈清空之后会执行
+        //         console.log('2');
+        //     }, 0);
+        //     fun1();
+        //     console.log('3');
+        // }
+
+        // fun2();
+
+        var p = new Promise(resolve =>{
+            // 压入到调用栈中时，微任务也会立即执行
+            console.log(4); // 第一个被压入到调用栈， 先打印出了  4
+            resolve(5);     // 第二个进入调用栈
+        })
+
+        function func1() {
+            console.log(1)
+        }
+
+        function func2() {
+            setTimeout(() => {
+                // 加入到消息队列中，
+                console.log(2)
+            }, 0);
+            func1();    // 直接执行输出1
+            console.log(3);
+            p.then(resolve => {
+                console.log(resolve);
+            })
+        }
+
+        func2();    // 4  1   3   调用栈清空，开始执行微任务  5 2
+    </script>
+
+    <!-- 
+        1、事件循环机制的组成：
+            调用栈、微任务队列、消息队列
+        2、js中的异步操作，如fetch、setTimeout、setInterval，消息会进入消 息队列，等待调用栈清空后再执行。
+        3、promise、async、await的异步操作，会加入到微任务中，调用栈清空的 时候会立即执行。调用栈中加入的微任务也会立即执行。
+            微任务队列，会比消息队列先执行
+
+     -->
+</body>
+</html>

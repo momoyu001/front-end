@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>构造函数继承及缺点</title>
+</head>
+<body>
+    
+    <script>
+
+        function Parent(name) {
+            this.name = [name];
+        }
+
+        Parent.prototype.getName = function() {
+            return this.name;
+        }
+
+        function Child() {
+            Parent.call(this, '篮球');
+        }
+
+        const child1 = new Child();
+        const child2 = new Child();
+        child1.name[0] = '排球';
+        console.log(child1.name);   // 排球
+        console.log(child2.name);   // 篮球
+        console.log(child2.getName());  // 并不能继承父类原型上的方法和属性
+
+    </script>
+
+    <!-- 
+        ## 构造函数继承
+            - 原理：在子类的构造函数中，去执行父类的构造函数，并且为其绑定子类的this
+            - 缺点：不能继承在父类原型上的方法和属性
+     -->
+</body>
+</html>

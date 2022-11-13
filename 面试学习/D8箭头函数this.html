@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>箭头函数this</title>
+</head>
+<body>
+    <input id="input_box" class="" type="text">
+    <script>
+
+        var x = 11;
+        var obj = {
+            x: 22,
+            say: () => {
+                console.log(this.x);
+                // 外层代码块的理解
+                // 这里的箭头函数本身是和say是平级的，本身所在的对象obj也是平级关系
+                // 父执行上下文就是window
+            },
+            hello: function() {
+                console.log(this.x);
+            }
+        }
+        obj.say();  // 虽然满足  对象属性方式调用 ，但这里是箭头函数，this是固定化的    11
+        obj.hello();// obj.hello.call(obj)   22
+
+        console.log('俺是分割线 ----  ');
+
+        var obj = {
+            birth: 1990,
+            getAge: function () {
+                var b = this.birth; // 1990
+                var fn = () => new Date().getFullYear() - this.birth;   // 箭头函数里面的this是指向obj对象
+                return fn();
+            }
+        }
+        let result = obj.getAge();   // obj.getAge.call(obj);   result = 31
+
+        // 箭头函数中的arguments --- 箭头函数时没有arguments的
+        let fnParent = function() {
+            console.log(arguments);
+            return () => {
+                // 这里输出的arguments实际上是它父作用域中的arguments
+                console.log(arguments);
+            }
+        }
+
+        fnParent(12, 34, 90)();
+
+        let fnArrow = () => {
+            console.log(arguments);
+        }
+
+        fnArrow();
+
+    </script>
+    <!-- 
+        箭头函数中的this （没有自己的this）
+            1、箭头函数中的this是在定义函数的时候就绑定的，而不是在执行函数的时候绑定
+            2、箭头函数中，this指向的固定化，并不是因为箭头函数内部有绑定this的机制，实际原因是箭头函数根本没有自己的this，导致内部的this就是外层代码块的this
+            正是因为它没有this，所以也就不能用作构造函数
+            3、箭头函数中的this是在定义的时候绑定
+            4、所谓定义时候绑定，就是this是继承自父执行上下文的this
+
+        箭头函数适合 与this无关的回调，定时器，数组的回调方法
+        不适合与this有关的回调，dom元素的事件回调，对象的方法
+     -->
+</body>
+</html>

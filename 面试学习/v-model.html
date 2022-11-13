@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v-model</title>
+    <script src="https://vuejs.org/js/vue.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="formType ? model1 : model2">
+        <button @click="changeEvent">改变v-model绑定的值</button>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    formType: true,
+                    model1: null,
+                    model2: null
+                }
+            },
+            watch: {
+                'model1': {
+                    handler(n, o) {
+                        console.log(n);
+                    }
+                },
+                'model2': {
+                    handler(n, o) {
+                        console.log(n);
+                    }
+                }
+            },
+            computed: {
+                model1Change() {
+                    console.log(this.model1);
+                },
+                model2Change() {
+                    console.log(this.model2);
+                }
+            },
+            methods: {
+                changeEvent() {
+                    this.formType = !this.formType;
+                    console.log(this.model1)
+                    console.log(this.model2)
+                }
+            }
+        })
+    </script>
+</body>
+</html>

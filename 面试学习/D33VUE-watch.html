@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VUE计算属性</title>
+    <script src="https://vuejs.org/js/vue.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="name1">
+        <input type="text" v-model="name2">
+        <input type="text" v-model="name3">
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                // name1: null,
+                name2: '',
+                // name3: null
+            },
+            methods: {
+                change() {
+                    this.message = 'kkkkllll';
+                }
+            },
+            computed: {
+                name1() {
+                    return this.name2.split('').reverse();
+                },
+                name3: {
+                    get() {
+                        return this.name1 + this.name2;
+                    },
+                    set(val) {
+                        console.log(val);
+                    }
+                }
+            }
+        })
+    </script>
+    <!-- 
+        computed: 同步对数据的处理；
+        watch: 对时间的派发，可异步；
+
+        computed：缓存属性，只有当依赖数据发生改变时，关联的数据才会变化，适用于计算或者格式化数据 的场景
+        watch：监听数据，有关联但是没有依赖，只要某个数据发生变化，就可以处理一些数据或者派发事件并同步/异步执行
+     -->
+
+</body>
+</html>

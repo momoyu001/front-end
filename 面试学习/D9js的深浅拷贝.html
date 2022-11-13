@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>js的深浅拷贝</title>
+</head>
+    <body>
+        
+    <script>
+        
+        var a = 123;    // 
+        var obj = {};   // obj 变量存储在栈里面，{} 对象是存储在堆里面，栈指向堆
+
+        var person1 = {
+            name: '张三',
+            age: 19,
+            hobby: ['学习', ['看电影', '购物'], '跑步'],
+            date: new RegExp('\\w+'),
+            function() {}
+        }
+
+        // 这里就只是简单的赋值
+        var person11 = person1;
+        person11.name = '李四';
+        person11.hobby[0] = '吃瓜';
+
+        console.log(person1);
+        console.log(person11);
+        console.log('上面只是简单的赋值');
+
+        function shallowCopy(obj) {
+            var target = {};
+
+            for (var i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                    target[i] = obj[i];
+                }
+            }
+
+            return target;
+        }
+
+        var person2 = {
+            name: '张三',
+            age: 19,
+            hobby: ['学习', ['看电影', '购物'], '跑步'],
+            date: new RegExp('\\w+'),
+            function() {}
+        }
+        var person22 = shallowCopy(person2);        
+        person22.name = '王晓星';    // 拷贝前后 基本数据类型 互不影响
+        person22.hobby[0] = '吃瓜...';   // 拷贝前后 引用类型 会有影响
+        console.log(person2);
+        console.log(person22);
+        console.log('上面实现的是浅拷贝');
+
+        var person3 = {
+            name: '张三',
+            age: 19,
+            hobby: ['学习', ['看电影', '购物'], '跑步'],
+            date: new RegExp('\\w+'),
+            function() {}
+        }
+
+        function deepClone(obj) {
+            var cloneObj = new obj.constructor();
+            // var cloneObj = {};
+            if (obj === null) return obj;   // typeof null === ‘object’
+            if (obj instanceof Date) return new Date(obj);
+            if (obj instanceof RegExp) return new RegExp(obj);
+            if (typeof obj !== 'object') return obj;
+            for (var i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                    cloneObj[i] = deepClone(obj[i]);
+                }
+            }
+
+            return cloneObj;
+        }
+
+        // var person1 = deepClone(person);
+        var person33 = JSON.parse(JSON.stringify(person3));
+        person33.name = '王晓星';    // 拷贝前后 基本数据类型 互不影响
+        person33.hobby[0] = '吃瓜...';   // 拷贝前后 引用类型 会有影响
+        person33.hobby[1][0] = 'ddd'
+        console.log(person3);
+        console.log(person33);
+        console.log('上面实现的是深拷贝');
+
+
+
+    </script>
+    <!-- 
+        基本数据类型：number string boolean undefined null
+        引用对象类型：obj
+     -->
+
+    <!-- 
+        instanceof：
+            A instanceof B ： B的prototype是否在A的原型链上
+     -->
+    
+    <!-- 
+        JSON.parse JSON.stringfy实现深拷贝的弊端
+            正则表达式、function、Date不能很好的完成深拷贝
+     -->
+    
+    <!-- 
+        1、浅拷贝：
+        创建一个新对象，这个对象有着原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是基本类型的值，如果属性是引用类型，拷贝的就是内存地址，所以如果其中一个对象改变了这个地址，就会影响到另一个对象。
+
+        2、深拷贝：
+        将一个对象从内存中完整拷贝一份出来，从堆内存中开辟一个新的区域来存放对象，且修改新对象不会影响到原对象。
+
+        3、针对引用类型来说的 赋值 浅拷贝 深拷贝的区别
+
+        1）赋值  浅拷贝
+        当我们把一个对象赋值给一个新的变量时，赋的其实是该对象的在栈中的地址，而不是堆中的地址。也就是两个对象指向同一个存储空间，无论哪个对象发生改变，其实都是改变的存储空间的内容，因此两个对象是联动的。
+
+        2）浅拷贝
+        重新在堆中创建内存，拷贝前后对象的基本数据类型互不影响，单拷贝前后对象的引用类型因共享一块内存，会相互影响
+
+        3）深拷贝
+        从堆内存中开辟一个新的区域存放新对象，对对象 中的子对象进行递归拷贝，拷贝前后两个对象互不影响。
+
+     -->
+    
+    <!-- 
+        浅拷贝的实现方式：
+            1、Object.assign()
+            2、...  ES6的扩展运算符
+            3、concat() -- 数组方法
+            4、lodash clone
+    -->
+    <!-- 
+        深拷贝的实现方式：
+            1、$.extend  jQuery里面的extend
+            2、lodash deepClone
+            3、递归实现
+     -->
+    
+</body>
+</html>

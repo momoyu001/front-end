@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寄生组合式继承</title>
+</head>
+<body>
+    
+    <script>
+        // -------------- 组合式继承 -----------------
+        // function Parent(name) {
+        //     this.name = [name];
+        // }
+
+        // Parent.prototype.getName = function() {
+        //     return this.name;
+        // }
+
+        // function Child() {
+        //     // 构造函数继承
+        //     Parent.call(this, '篮球')
+        // }
+
+        // // 原型链式继承
+        // Child.prototype = new Parent();
+
+        // const child1 = new Child();
+        // const child2 = new Child();
+        // child1.name[0] = '排球';
+        // console.log(child1.name);   // 排球
+        // console.log(child2.name);   // 篮球
+        // console.log(child2.getName());  // 篮球
+
+        // ----------- 寄生组合式继承---------------
+        // function Parent(name) {
+        //     this.name = [name];
+        // }
+
+        // Parent.prototype.getName = function() {
+        //     return this.name;
+        // }
+
+        // function Child() {
+        //     // 构造函数继承
+        //     Parent.call(this, '篮球')
+        // }
+
+        // // 原型链式继承
+        // Child.prototype = Parent.prototype;
+
+        // const child1 = new Child();
+        // const child2 = new Child();
+        // child1.name[0] = '排球';
+        // console.log(child1.name);   // 排球
+        // console.log(child2.name);   // 篮球
+        // console.log(child2.getName());  // 篮球
+
+        // 
+        function Parent(name) {
+            this.name = [name];
+        }
+
+        Parent.prototype.getName = function() {
+            return this.name;
+        }
+
+        function Child() {
+            // 构造函数继承
+            Parent.call(this, '篮球')
+        }
+
+        // 原型链式继承 - 浅拷贝
+        Child.prototype = Object.create(Parent.prototype);
+        // Child.prototype = Parent.prototype;
+
+        Child.prototype.getAge = function() {
+            return '128';
+        }
+        const child1 = new Child();
+        const child2 = new Child();
+        const parent = new Parent();
+        child1.name[0] = '排球';
+        console.log(child1.name);   // 排球
+        console.log(child2.name);   // 篮球
+        console.log(child2.getName());  // 篮球
+        // console.log(parent.getAge());   // 浅拷贝prototype之后，getAge（） 报错，没有浅拷贝，不报错
+
+    </script>
+
+    <!-- 
+        ## 组合式继承
+            - 原理：构造函数式继承 + 原型链式继承
+            - 缺点：每生成一个child实例，都会有执行 new Parent()   和 Parent.call()
+        ## 寄生式组合继承  -  （解决组合继承中，构造函数可能被执行多次的问题）
+            - babel  ES6转换成ES5，用到这种寄生式组合继承
+            - 缺点：子类的prototype指向了父类的prototype，子类原型的改动会影响到父类原型 - 解决方法： 浅拷贝prototype
+     -->
+</body>
+</html>

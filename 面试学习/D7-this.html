@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>this</title>
+</head>
+<body>
+    
+    <script>
+        var name = 222;
+        var a = {
+            name: 111,
+            say: function () {
+                console.log(this.name);
+            }
+        }
+
+        var fun = a.say;
+        fun();              //  直接调用 fun.call(window)       222
+        a.say();            //  作为对象属性来调用 a.say.call(a)     111
+
+        var b = {
+            name: 333,
+            say: function (fun) {
+                fun();      //  b.say(a.say)    在这调用的，fun.call(window)  222
+            }
+        }
+
+        b.say(a.say);       // 222
+        b.say = a.say;      // 相当于 b = { say: function () { console.log(this.name); } }
+        b.say();            // b.say.call(b)  333
+
+        console.log('-------讲解示例---------');
+
+        // 讲解示例：
+        // 1、直接调用函数
+        function get (content) {
+            console.log(content);
+        }
+        get('你好')
+        // 函数即对象，有对象就有方法，直接调用，就相当于是  .call(window, arguments) 的语法糖
+        get.call(window, '你好')
+
+        // 2、作为对象方法被调用
+        var person = {
+            name: '张三',
+            run: function (time) {
+                console.log(`${this.name} 在跑步 最多${time}min及不行了 `);
+            }
+        }
+
+        person.run(30);
+        person.run.call(person, 30);
+    </script>
+
+    <!-- 
+        js中的this:
+        1、在函数中直接使用
+        2、函数作为对象的方法被调用（谁调用我，我就指向谁）
+        函数的调用都可以看做.call()，直接调用时，call的第一个参数是window，有明确的对象调用时，第一个参数就是调用的那个对象
+     -->
+</body>
+</html>

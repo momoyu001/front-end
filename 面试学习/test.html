@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试问题</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html,body {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .transition {
+            width: 100px;
+            height: 200px;
+            border: 1px solid #ff0000;
+            transition: width 1s;
+        }
+
+        .transition:hover {
+            width: 400px;
+        }
+
+        .animation {
+            margin-top: 30px;
+            width: 100px;
+            height: 200px;
+            border: 1px solid #ff0000;
+            animation: scaleTo 4s infinite;
+        }
+
+        @keyframes scaleTo {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(2);
+            }
+        }
+
+        .text {
+            width: 100px;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+        }
+
+
+
+        .parent {
+            height: 200px;
+            width: 200px;
+            margin-top: 30px;
+            background-color: #ff0000;
+            /* border: 1px solid #ff00ff; */
+            overflow: visible;
+        }
+
+        .son {
+            height: 100px;
+            width: 100px;
+            background-color: #ff00ff;
+            /* border: 1px solid #00ff00; */
+            margin-top: 70px;
+        }
+
+        .text-over {
+            width: 80px;
+            /* text-overflow: clip; */
+            text-overflow: ellipsis;
+            overflow: hidden;
+            border: 1px solid #ff0000;
+        }
+
+
+        .box {
+            height: 100%;
+        }
+
+        .left {
+            float: left;
+            width: 200px;
+            height: 100%;
+            background-color: #ff0000;
+        }
+
+        .right {
+            float: right;
+            width: 200px;
+            height: 100%;
+            background-color: #00ff00;
+        }
+
+        .center {
+            height: 100%;
+            margin-left: 200px;
+            margin-right: 200px;
+            background-color: #ff00ff;
+        }
+
+        .flex-box {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .left-box {
+            height: 100%;
+            flex: 0 0 200px;
+            background-color: #ff0000;
+        }
+
+        .center-box {
+            flex: 1 1;
+            height: 100%;
+            background-color: #ff00ff;
+        }
+
+        .right-box {
+            flex: 0 0 200px;
+            height: 100%;
+            background-color: #0000ff;
+        }
+
+        .after:after {
+            content: "我是伪元素";
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class="transition"></div> -->
+    <!-- <div class="animation"></div> -->
+    <!-- <div class="text">额一起玩的hi耦合的将尽一切饿哦晚上打卡机京东购物dhks21938902374902dasjkxdnhqwdyik轻轨饿哦IQ我</div> -->
+<!-- 
+    <div class="parent">
+        <div class="son"></div>
+    </div> -->
+
+    <!-- <div class="text-over">hdqowiejiow</div> -->
+
+    <!-- <div class="box">
+        <div class="left"></div>
+        <div class="right"></div>
+        <div class="center"></div>
+    </div> -->
+
+    <!-- <div class="flex-box">
+        <div class="left-box"></div>
+        <div class="center-box"></div>
+        <div class="right-box"></div>
+    </div> -->
+
+    <div class="after"></div>
+</body>
+</html>

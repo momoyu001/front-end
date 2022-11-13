@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排序</title>
+</head>
+<body>
+    <script>
+        let arr = [
+            { age: 12, name: 'a' },
+            { age: 11, name: 'b' },
+            { age: 33, name: 'c' },
+            { age: 10, name: 'd' },
+            { age: 34, name: 'e' }
+        ]
+
+        console.log('---冒泡排序（降序的）: ---');
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = i; j < arr.length; j++) {
+                if (arr[i].age < arr[j].age) {
+                    // 两层循环嵌套，两两比较大小，交换位置
+                    let temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+        console.log(arr);
+
+        console.log('---快速排序: ---')
+
+        let newArr1 = [];
+        for (let i = 0; i < arr.length; i++) {
+            let max = arr[i];
+            for (let j = i; j < arr.length; j++) {
+                if (max.age < arr[j].age) {
+                    max = arr[j];
+                }
+            }
+            newArr1.push(max);
+        }
+        console.log(newArr1);
+
+        console.log('---插入排序---');
+        
+        for (let i = 1; i < arr.length; i++) {
+            let key = arr[i];
+            // i 从1开始，之前的（0）当做已经排序好的数组，
+            // 将新元素(i及其之后的)，从后往前与排序好的数组比较插入
+            let j = i - 1;  // 下标从后往前
+            while (j >= 0 && arr[j].age < key.age) {
+                arr[j + 1] = arr[j];    // 往后移动一位
+                j--;
+            };
+            arr[j + 1] = key;
+        }
+
+        console.log(arr);
+
+        console.log('---二分查找插入---');
+
+        for (let i = 0; i < arr.length; i++) {
+            let key = arr[i];
+            let left = 0;
+            let right = i - 1;
+            while (left <= right) {
+                let middle = parseInt((left + right) / 2);
+
+                if (key.age < array[middle].age) {
+                    right = middle - 1;
+                } else {
+                    left = middle - 1;
+                }
+            }
+
+            for (let j = i - 1; j >= left; j--) {
+                arr[j + 1] = arr[j];
+            }
+
+            arr[left] = key;
+        }
+
+    </script>
+    <!-- 
+        1、冒泡排序
+            循环嵌套，两两比较，交换位置
+            o(n^2)  o(n)
+        2、选择排序
+            首先在未排序序列中找到最大或最小的元素，存放到排序序列的起始位置，然后再从剩余未排序中继续寻找最小(大)元素，放到已排序序列的末尾，以此类推。
+        3、插入排序
+            通过构建有序序列，对于未排序数据，在已经排序序列中从后往前向前扫描，并找到相应位置插入。
+            1）第一个元素当做已经排序好的；
+            2）取出下一个元素，在已经排序的元素序列中从后向前扫描；
+            3）如果该元素（已排序）大于新元素，将该元素移到下一位置；
+            4）重复步骤三，知道找到已排序的元素小于或者等于新元素的位置；
+            5）将新元素插入到该位置后；
+            6）重复2~5；
+        4、希尔排序
+            与插入排序的不同之处在于，优先比较距离较远的元素，又叫缩小增量排序。
+            核心在于间隔序列的设定。
+     -->
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>策略模式</title>
+</head>
+<body>
+    
+    <script>
+
+        // 类 - 构造函数的概念，所有语言都适用
+        var pS = function() {};
+        pS.prototype.calculate = function (salary) {
+            return salary * 4;
+        }
+
+        var pA = function() {};
+        pA.prototype.calculate = function (salary) {
+            return salary * 3;
+        }
+
+        var Bouns = function () {
+            this.salary = null;     // 初始的薪水
+            this.strategy = null;   // 绩效等级的策略对象 - pS  pA
+        }
+
+        Bouns.prototype.setSalary = function (salary) {
+            this.salary = salary;
+        }
+
+        Bouns.prototype.setStrategy = function (strategy) {
+            this.strategy = strategy;
+        }
+
+        Bouns.prototype.getBouns = function () {
+            return this.strategy.calculate(this.salary);
+        }
+
+        var bouns = new Bouns();
+        bouns.setSalary(10000);
+        bouns.setStrategy(new pS());
+        console.log(bouns.getBouns());
+
+
+        // 函数也是对象
+        var strategies = {
+            'S': function (salary) {
+                return salary * 4;
+            },
+            'A': function (salary) {
+                return salary * 3;
+            },
+            'B': function (salary) {
+                return salary * 2
+            }
+        }
+
+        var getBouns = function(level, salary) {
+            return strategies[level](salary);
+        }
+
+        console.log(getBouns('S', 10000));
+    </script>
+
+    <!-- 
+        1、策略模式
+            定义一系列的算法，把他们封装起来，并且他们之间可以互相替换
+            核心：将算法的使用 和 算法的实现 分离开来
+     -->
+</body>
+</html>

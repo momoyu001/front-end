@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ES6实现单例模式</title>
+</head>
+<body>
+    
+    <script>
+        
+        // ES5 构造函数
+        function Person(name, sex){
+            this.name = name;
+            this.sex = sex;
+        }
+
+        Person.prototype.say = function () {
+            console.log('构造函数原型上的方法 - say');
+        }
+
+        let person1 = new Person('星空', '女');
+        console.log(person1.name);
+        person1.say();
+
+        // ES6 构造函数 - class 
+        class Persons {
+            constructor(name, sex) {
+                // construtor 更多是用来做初始化操作
+                this.name = name;
+                this.sex = sex;
+            }
+            // 方法其实是定义在原型上面的。
+            say() {
+                console.log('ES6 - class')
+            }
+        }
+
+        // new 的时候，自动调用 constructor 方法
+        let person2 = new Persons('张三', '男');
+        console.log(person2.name);
+        person2.say();
+        console.log(person2.say === Persons.prototype.say);
+
+        // class 的静态方法
+        class Foo {
+            static classMethod() {
+                console.log('我是静态方法，只能被类调用，不能被实例调用');
+            }
+        }
+
+        Foo.classMethod();
+
+        // 举个栗子：
+        class LLL {
+            constructor(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            static getInstance(name, age) {
+                if (!this.instance) {
+                    this.instance = new LLL(name, age);
+                }
+
+                return this.instance;
+            }
+        }
+
+        let LLLcom1 = LLL.getInstance('张张', 19);
+        let LLLcom2 = LLL.getInstance('散散', 20);
+
+        console.log(LLLcom1 === LLLcom2);
+    </script>
+
+    <!-- 
+        ES5 构造函数 ---》  class
+            class中的静态方法： static
+
+     -->
+</body>
+</html>

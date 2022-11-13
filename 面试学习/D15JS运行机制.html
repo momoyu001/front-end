@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS运行机制\arguments对象\内存泄漏</title>
+</head>
+<body>
+    
+    <script>
+
+        // 一
+        function get(){
+            console.log(arguments)      // 类数组
+            console.log([...arguments]) // [1, 2, 3]
+            console.log(Array.prototype.slice.call(arguments)); // [1, 2, 3]
+        }
+
+        get(1, 2, 3);
+
+        // 二
+        function fun() {
+            let a = b = 0;  // 赋值：从右往左
+            // 相当于 let a = (b = 0); 此时 b 没有声明，会变成全局的对象
+        }
+        fun();
+        // 为什么调用这个函数时，代码中的 b 变成了一个全局变量？？？
+
+        // 三、高阶函数
+        function highOrder(params, calllback) {
+            return calllback(params);
+        }
+
+    </script>
+
+    <!-- 
+        1、JS单线程：同一时间做同一件事
+        2、arguments对象：是一个类数组对象
+            类数组对象转换成数组：
+                1）ES6 扩展元素运算符
+                2）Array.prototype.slice.call(arguments)
+                    a。数组slice方法：截取数组(start, end) 起始下标，结束下标，不传参数时不做截取，不会改变原数组
+            箭头函数没有arguments对象
+     -->
+    
+    <!-- 
+        ES6：箭头函数arguments
+            内部arguments由定义时外围最接近一层的非箭头函数的arguments来决定其值
+            全局定义的箭头函数，因为箭头函数外围没有非箭头函数，所以没有arguments
+            定义在某个非箭头函数里面的箭头函数，可以打印出arguments
+        ES6：箭头函数this
+            与arguments类似，不同的是，全局定义的箭头函数，可以打印出this即window
+     -->
+    
+    <!-- 
+        哪些操作会造成内存泄漏？？？
+            1、闭包
+            2、以外的全局变量
+            3、被遗忘的定时器
+            4、脱离dom的引用（对dom的清理，先获取了一个dom的引用，后面这个dom被删除了，但变量一直保持着这个dom引用）
+    -->
+    <!-- 
+        ES6新特性：
+            1、块级作用域
+            2、class
+            3、箭头函数
+            4、模板字符串
+            5、扩展运算符
+            6、解构
+            7、异步的 generator、promise
+            8、symbol
+            9、代理
+            10、新增的数据结构set map
+     -->
+    
+    <!-- 
+        什么是高阶函数？
+            将函数作为参数或者返回值的函数
+            也是函数，参数是函数，返回了一个callback
+    -->
+</body>
+</html>

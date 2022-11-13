@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手写map</title>
+</head>
+<body>
+    
+    <script>
+        var arr = [1, 2, 3];
+        var array = arr.map((item, index) => {
+            return item *2;
+        })
+        console.log('map相关');
+        console.log(arr);
+        console.log(array);
+
+        // 1、手写map
+        function map(arr, calllback) {
+            // 检查参数是否正确
+            if (!Array.isArray(arr) || !arr.length || typeof calllback !== 'function') {
+                return []
+            } else {
+                // 进行下面的操作
+                let result = [];
+                for(let i = 0; i < arr.length; i++) {
+                    result.push(calllback(arr[i], i ,arr));
+                }
+
+                return result
+            }
+        }
+
+        map(arr, (item => {
+            console.log(item);
+        }));
+
+        console.log(map(arr, (item) => {
+            return item * 2
+        }))
+
+        // 2、手写filter
+        let arrFilter = [10, 12, 45, 49];
+        let arrFilterResult = arrFilter.filter(item => {
+            return item > 20;
+        })
+        console.log('filter相关')
+        console.log(arrFilter);
+        console.log(arrFilterResult);
+
+        function filter (arr, callback) {
+            if (!Array.isArray || !arr.length || typeof callback !== 'function') {
+                return [];
+            } else {
+                let result = [];
+                for (let i = 0; i < arr.length; i++) {
+                    result.push(callback(arr[i]));
+                }
+
+                return result;
+            }
+        }
+
+        console.log(arrFilter.filter((item) => {
+            return item > 20
+        }))
+
+        // 3、手写reduce
+    </script>
+
+    <!-- 
+        手写实现 Array.prototype.map 方法：
+            map : 返回一个新的数组，可以传入一个回调函数。
+     -->
+    <!-- 
+        回调函数时一个可执行的代码块；容易形成回调地狱
+     -->
+</body>
+</html>

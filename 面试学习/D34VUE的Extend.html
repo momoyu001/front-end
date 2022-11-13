@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VUE-Extend</title>
+    <script src="https://vuejs.org/js/vue.min.js"></script>
+</head>
+<body>
+    <div id="root">
+        <test-com :msg="message"></test-com>
+    </div>
+    <script>
+        // const myComponent = Vue.extend({
+        //     template: `<div>{{ msg }}</div>`,
+        //     props: {
+        //         msg: {
+        //             type: String
+        //         }
+        //     }
+        // })
+
+        // Vue.component('test-com', myComponent);
+
+        Vue.component('test-com', {
+            template: `<div>{{ msg }}</div>`,
+            props: {
+                msg: {
+                    type: String
+                }
+            }
+        })
+
+        new Vue({
+            el: '#root',
+            data() {
+                return {
+                    message: 'message消息'
+                }
+            }
+        })
+    </script>
+
+    <!-- 
+        1、通过Vue.extend返回了一个构造函数
+        2、在Vue.component里面，判断参数，当它是构造函数时，把它挂载到Vue的options选项里面的components上面
+        3、components里面，默认的有KeepAlive、Transition组件，Vue的默认全局组件
+     -->
+</body>
+</html>

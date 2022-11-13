@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组reduce</title>
+</head>
+<body>
+    
+    <script>
+        // 1、数组求和
+        var arr1 = [1, 2, 3, 4];
+        var sum = arr1.reduce((prev, cur) => {
+            return prev + cur
+        });
+        // 没有提供 init 第一次执行时，prev 和 cur 分别是  1  2
+        // 提供 init 第一次执行时，prev 和 cur 分别是  init  1
+        console.log(sum);
+
+        // 2、数组求积
+        var arr2 = [1, 2, 3, 4];
+        var total = arr2.reduce((prev, cur) => {
+            return prev * cur;
+        }, 1)
+        console.log(total);
+
+        // 3、计算数组中每个元素出现的个数
+        var arr3 = ['d', 'b', 'c', 'a', 'a', 'd', 'e', 'd'];
+        let nameNum = arr3.reduce((prev, cur) => {
+            if (cur in prev) {
+                prev[cur]++;
+            } else {
+                prev[cur] = 1;
+            }
+
+            return prev;
+        }, {});
+        console.log(nameNum);
+
+        // 4、数组去重
+        var arr4 = [1, 2, 3, 1, 2, 4, 3, 1];
+        const newArr4 = arr4.reduce((prev, cur) => {
+            if (!prev.includes(cur)) {
+                prev.push(cur);
+            }
+            return prev;
+        }, []);
+        console.log(newArr4);
+    </script>
+
+    <!-- 
+        ## 数组的reduce方法：
+            参数：回调函数  init初始值
+            ```
+                arr.reduce(function (prev, cur, index, arr){
+
+                }, init)
+            ```
+            arr: 原数组
+            prev: 表示上一次调用回调时的返回值，或者初始值 init
+            cur: 表示当前正在处理的数组元素
+            index: 表示当前正在处理的数组元素的索引，第一次执行时，若提供 init 值，则索引为0，否则索引为1
+            init： 表示初始值
+
+            常用参数只有两个 prev 和 cur
+        ## 运用
+            1、数组求和、求乘积
+            2、计算数组中每个元素出现的次数
+            3、数组去重
+            4、将二维数组转化成一维数组
+            5、将多维数组转换为一维数组
+            6、对象的属性求和
+     -->
+</body>
+</html>

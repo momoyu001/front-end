@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS代码优化</title>
+</head>
+<body>
+    
+    <script>
+        var obj1 = {
+            name: 'zs'
+        }
+
+        var obj2 = {
+            name: 'ls'
+        }
+
+        var obj3 = {
+            [obj1]: '11',
+            [obj2]: '22'
+        }
+
+        console.log(obj3);  // { [object Object] : '22' }  调用了toString方法
+
+
+        // Map方法
+        const fruitColor = new Map().set('red', ['apple']).set('yellow', ['banana']);
+        function printFruits(color) {
+            return fruitColor.get(color) || [];
+        }
+        console.log(printFruits('red'));
+    </script>
+
+    <!-- 
+        - 数组的includes方法
+        - 提前退出提前返回
+        - 对象字面量代替switch
+     -->
+    <!-- 
+        ES5中：对象中的key，默认是字符串形式的，如果不是字符串，会隐式的调用toString方法
+        ES6中：Map，某些场景可替代对象
+     -->
+</body>
+</html>

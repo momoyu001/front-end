@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue-loading</title>
+    <script src="https://vuejs.org/js/vue.min.js"></script>
+
+    <style>
+        #loading_wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .7);
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="root">
+        <button @click="showLoading">显示loading</button>
+    </div>
+
+    <script>
+
+        const LoadingComponent = Vue.extend({
+            template: `<div id="loading_wrapper">{{ msg }}</div>`,
+            props: {
+                msg: {
+                    type: String,
+                    default: 'loading...'
+                }
+            }
+        })
+
+        function Loading(msg) {
+            // 1、先创建一个容器
+            const div = document.createElement('div');
+            div.setAttribute('id', 'loading_wrapper_box');
+            document.body.append(div);
+
+            // 2、将loading的模板挂载到创建的容器上
+            new LoadingComponent({
+                props: {
+                    msg: {
+                        type: String,
+                        default: msg
+                    }
+                }
+            }).$mount('#loading_wrapper_box');
+            // $mount挂载的方法一个最大的好处就是，将实例化的内容，和他对应的HTML关联分开
+            // $mount方法支持传入两个参数，第一个是el，表示它挂载的元素，可以是字符串，也可以是DOM对象，如果是字符串，在浏览器环境下会调用query方法转换成DOM对象。第二个参数是和服务端渲染相关的，在浏览器环境下不需要传第二个参数
+
+            // ？？？为什么挂载之后，#loading_wrapper_box不见了？？？
+
+            // 3、实现，调用这个方法之后，返回一个函数，之后调用这个返回的函数，可以将生成的loading关闭
+            return () => {
+                document.body.removeChild(document.getElementById('loading_wrapper'));
+            }
+        }
+
+        Vue.prototype.$loading = Loading;
+
+        new Vue({
+            el: '#root',
+            data() {
+                return {
+
+                }
+            },
+            methods: {
+                showLoading() {
+                    const hide = this.$loading('加载中......');
+                    setTimeout(() => {
+                        hide();
+                    }, 5000);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

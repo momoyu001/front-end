@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        // 桶排序 --- 桶排序是最快-最简单的，这个栗子还不是真正意义上的桶排序
+        // let ret = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        // let arr = [2, 4, 2, 4, 5, 6, 1, 8, 10, 9];
+
+        // for(let i = 0; i< arr.length; i++) {
+        //     ret[arr[i]]++;
+        // }
+
+        // console.log(ret);
+
+        // ret.map((item,index) => {
+        //     if (item) {
+        //         if (item > 1) {
+        //             for (let j = 0; j < item; j ++) {
+        //                 console.log(index, '~')
+        //             }
+        //         } else {
+        //             console.log(index, '@')
+        //         }
+        //     }
+        // })
+
+        // 冒泡排序 -- 相邻两个元素比较，按照规则交换位置or不变位置
+        let arr2 = [12, 35, 99, 18, 76];
+
+        for (let i = 0; i < arr2.length - 1; i++) {
+            for (let j = 0; j < arr2.length - 1 - i; j++) {
+                console.log(j, j + 1)
+                if (arr2[j] > arr2[j + 1]) {
+                    // 前面的数比后面的小，交换位置
+                    [arr2[j], arr2[j + 1]] = [arr2[j + 1], arr2[j]];
+                }
+            }
+        }
+
+        console.log(arr2);
+
+
+    </script>
+</body>
+</html>

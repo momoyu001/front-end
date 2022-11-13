@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预编译</title>
+</head>
+<body>
+    
+    <script>
+        function fn(a, c) {
+            console.log(a);     // function a() {}
+            var a = 123;
+            console.log(a);     // 123
+            console.log(c);     // function c() {}
+            function a() {}
+            if (false) {
+                var d  = 678
+            }
+            console.log(d);     // undefined
+            console.log(b);     // undefined
+            var b = function () {}; // 函数的表达式，不是函数声明
+            console.log(b);     // function () {}
+            function c() {};
+            console.log(c);     // function c() {}
+
+
+            console.log(a, b, c, d)
+        }
+
+        fn (1, 2);
+    </script>
+    <!-- 
+        预编译：作用域的创建阶段 就是 预编译的阶段
+        预编译的时候做了哪些事情?
+        js的变量对象，在函数作用域的创建阶段，也叫作AO对象，我们访问不到，是JS引擎自己去访问的
+        AO对象做了哪些事情：
+        1、创建了ao对象
+        2、找形参和变量的声明，作为ao对象的属性名，值是undefined
+        3、实参和形参相统一
+        4、找函数声明，函数声明和变量声明一致时，会覆盖变量声明
+
+        AO: {
+            a: undefined    1   function a() {}
+            c: undefined    2   function c() {}
+            d: undefined
+            b: undefined
+        }
+
+        解释执行（逐行执行）
+     -->
+</body>
+</html>

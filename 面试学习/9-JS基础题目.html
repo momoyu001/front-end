@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS基础题目</title>
+</head>
+<body>
+    
+    <script>
+        // 第一题：
+        var a = { n: 1 };
+        a.x = a = { n: 2 };
+
+        // console.log(a.x);   // undefined
+        /**
+            1、赋值运算符从左往右进行执行
+            2、在这个语句中，  . 运算符的优先级大于 = ，所以会先执行 . 运算符
+            3、a.x = { n: 2 }，此时a变成了{ n: 1, x: { n: 2 }}
+            4、又因为后面有 a = { n: 2 }，整个a都被重新赋值了，此时a变成了 { n: 2 }
+            5、此时打印a.x就是undefined
+        **/
+        var a1 = { n: 1 };
+        var a2 = a1;
+        a1.x = a1 = { n: 2 };
+        console.log(a1.x);  // undefined
+        console.log(a1);    // { n: 2 }
+        console.log(a2);    // { n: 1, x: { n: 2 } }
+
+        // 第二题：
+    </script>
+</body>
+</html>

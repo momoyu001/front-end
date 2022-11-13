@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防抖函数的理解和实现</title>
+</head>
+<body>
+    <input type="text" id="input">
+    <input type="text" id="test_input">
+
+    <script>
+        var input = document.getElementById('input');
+
+        // 防抖函数
+        // function debounce(delay, value) {
+        //     let timer;
+        //     clearTimeout(timer);
+        //     // 应该存储timer的变量
+        //     // timer变量需要一直保存在内存中
+        //     timer = setTimeout(function() {
+        //         console.log(value);
+        //     }, delay);
+        // }
+
+        function debounce(delay, callback) {
+            // 需要保存这个timer变量用于清除定时器
+            let timer;
+            // 闭包？？？  防抖是闭包的一种使用场景
+            return function(value) {
+                clearTimeout(timer);
+                // 应该存储timer的变量
+                // timer变量需要一直保存在内存中
+                timer = setTimeout(function() {
+                    // console.log(value); // 输出结果，希望结果在外面输出 --- 需要传入一个callback --- 回调函数
+                    callback(value);
+                }, delay);
+            }
+        }
+
+        function fn(value) {
+            console.log(value);
+        }
+
+        let debounceEvent = debounce(1000, fn);
+
+        input.addEventListener('keyup', function(e) {
+            debounceEvent(e.target.value);
+        }, false);
+        /**
+        tips: addEventListener 第三个参数：useCapture 指定事件是否在捕获或冒泡阶段执行，默认是false
+            false： 在冒泡阶段阶段执行事件
+            true： 在捕获阶段执行事件
+        **/
+
+        function debouceTest(delay, callback) {
+            let timer;
+
+            return function(value) {
+                // 一定时间内又再次触发了，清除定时器，再次重新计时，直到delay时间后，执行callback
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    callback(value);
+                }, delay);
+            }
+        }
+
+        function fnTest(value) {
+            console.log(value);
+        }
+
+        let inputTest = document.getElementById('test_input');
+        let debouceTestEvent = debouceTest(1000, fn);
+        inputTest.addEventListener('keyup', function(e) {
+            debouceTestEvent(e.target.value);
+        }, false);
+
+    </script>
+    <!-- 
+        防抖节流是闭包的实际运用
+
+        防抖：当持续触发事件，一定时间内没有再触发事件，事件处理函数才会执行一次。
+        如果设定时间到来之前，又触发了一次事件，就要重新开始延时（重新开始定时器）。意味着上一次还没有结束的定时器要清除掉，重新开始
+     -->
+    <!-- 
+        闭包：函数里面return函数
+     -->
+
+    <!-- 
+        防抖函数的实际运用：
+        1、使用echart时，改变浏览器宽度的时候，希望重新渲染（虽然额chart有resize函数）
+        2、输入框搜索，输入n秒之后才进行搜索请求，n秒内又输入，则重新计时
+     -->
+</body>
+</html>
