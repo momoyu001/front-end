@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise</title>
+</head>
+<body>
+    
+    <script>
+        /**
+         * promise是一个构造函数，实例化时，传入一个函数作为处理器
+         * 处理器函数有两个参数(resolve, reject)分别将结果变为成功态和失败态
+         * promise对象有了执行结果之后，通过resolve传递出去，失败的话通过reject传递出去
+         * promise原型上定义着.then方法
+         * 
+         * 创建一个promise实例时，处理器函数时会立即执行的
+         * 
+         * promise/A+中规定，promise对象已经由pending状态改变为resolved或者rejected之后，不可再次更改状态。
+         * 因此更新状态时，要判断当前是pending才可以更新。
+         * 
+         * then方法有两个回调，当Promise的状态发生改变时，成功或失败的回调会分别调用then方法的两个回调
+         * 
+         *  --- Promise实现异步需求：
+         * 为了满足异步需要而做的处理：当执行then方法时，如果还是pending状态，就把回调函数临时寄存到一个（队列）数组里面，当状态发生改变时，一次从数组里面取出执行
+         * 
+         *  --- Promise的链式调用：
+         * Promise/A+的相关定义：
+         * 1、then方法必须返回一个promise对象
+         * 2、如果then方法返回的是一个普通值，如Number、String等，就用此值包装成一个新的Promise对象返回
+         * 3、如果then方法中没有return语句，就返回一个用Undefined包装的Promise对象
+         * 4、如果then方法中出现异常，则调用失败方法(reject)跳转到下一个then的onRejected
+         * 5、如果then方法没有传入任何回调，则继续向下传递（值穿透）-变成回调函数返回普通值即可
+         * 6、如果then方法返回了一个Promise对象，那就以这个对象为准，返回它的结果
+         * **/
+
+        // promise基础结构
+        function Promise(executor) {
+            // 内部变量托管this。需要在前面就声明好，在使用到的地方之前就声明，let没有变量提升
+            let _this = this;
+            // 状态 pending、resolved、rejected
+            this.state = 'pending';
+            // 执行成功的结果
+            this.value = undefined;
+            // 执行失败的元婴
+            this.reason = undefined;
+
+            /**
+             * 为了满足异步需要而做的处理：
+             * **/
+            // 保存成功的回调
+            this.onResolvedCallbacks = [];
+            // 保存失败的回调
+            this.onRejectedCallbacks = [];
+
+            // 初始化实例就立即执行
+            try {
+                executor(resolve, reject);
+            } catch(err) {
+                reject(err);
+            }
+
+            function resolve(value) {
+                if (_this.state === 'pending') {
+                    _this.state = 'resolved';
+                    _this.value = value;
+                    // 遍历执行成功的回调
+                    _this.onResolvedCallbacks.forEach(callback => callback(value));
+                }
+            };
+            
+            function reject(reason) {
+                if (_this.state === 'pending') {
+                    _this.state = 'rejected';
+                    _this.reason = reason;
+                    _this.onRejectedCallbacks.forEach(callback => callback(reason));
+                }
+            };
+        }
+
+        Promise.prototype.then = function(onFulfilled, onRejected) {
+            // 当then方法中没有任何回调时，我们需要吧接收到的值继续传递下去：判断回调参数不为函数时，把他变成回调函数返回普通值即可
+            onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : (value) => value;
+            onRejected = typeof onRejected === 'function' ? onRejected : (err) => {
+                throw err
+            };
+
+            // 每一个then方法都需要返回一个promise对象，这里创建一个promise对象，接着在每个执行函数处，使用try...catch...语法
+            let promise2 = new Promise((resolve, reject) => {
+                // 处理pending状态下的情况：异步的情况下，执行。then方法时，状态可能还在pending
+                if (this.state === 'pending') {
+                    // if (typeof onFulfilled === 'function') {
+                    //     this.onResolvedCallbacks.push(onFulfilled);
+                    // }
+
+                    // if (typeof onRejected === 'function') {
+                    //     this.onRejectedCallbacks.push(onRejected);
+                    // }
+
+                    this.onResolvedCallbacks.push(() => {
+                        queueMicrotask(() => {
+                            try {
+                                let x = onFulfilled(this.value)
+                                resolvePromise(promise2, x, resolve, reject);
+                            } catch (e) {
+                                reject(e);
+                            }
+                        })
+                    })
+
+                    this.onRejectedCallbacks.push(() => {
+                        queueMicrotask(() => {
+                            try {
+                                let x = onRejected(this.reason);
+                                resolvePromise(promise2, x, resolve, reject);
+                            } catch (e) {
+                                reject(e);
+                            }
+                        })
+                    })
+                }
+
+                // onFulfilled 和 onRejected两个参数不是必选的，所以做了两层判断
+                if (this.state === 'resolved') {
+                    // if (typeof onFulfilled === 'function') {
+                    //     onFulfilled(this.value);
+                    // }
+
+                    // try {
+                    //     let x = onFulfilled(this.value);
+                    //     resolve(x);
+                    // } catch(err) {
+                    //     reject(err);
+                    // }
+
+                    queueMicrotask(() => {
+                        try {
+                            let x = onFulfilled(this.value);
+                            resolvePromise(promise2, x, resolve, reject);
+                        } catch(err) {
+                            reject(err);
+                        }
+                    })
+                }
+
+                if (this.state === 'rejected') {
+                    // if (typeof onRejected === 'function') {
+                    //     onRejected(this.reason);
+                    // }
+                    queueMicrotask(() => {
+                        try {
+                            let x = onRejected(this.reason);
+                            resolvePromise(promise2, x, resolve, reject);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    })
+                }
+            })
+
+            return promise2;
+        };
+
+
+        Promise.prototype.catch = function(onRejected) {
+            return this.then(null, onRejected);
+        }
+
+        // 一个新的方法开处理then方法返回值来生成新的promise对象
+        /**
+         * 解析then的返回值与新的promise对象
+         * @param {Object} 新的promise对象，就是我们创建的promise2实例
+         * @param {*} x 上一个then的返回值
+         * @param {Function} resolve promise2处理器函数的resolve
+         * @param {Function} reject promise2处理器函数的reject
+         * **/
+        function resolvePromise(promise2, x, resolve, reject) {
+            // 1、避免循环引用，当then的返回值与新生成的promise对象为同一个的时候，抛出异常
+            if (promise1 === x) {
+                reject(new TypeError('请避免Promise循环引用'));
+            }
+
+            let called;
+            // 2、判断 x 的类型，分情况处理
+            // 当 x 是一个promise对象，就执行它，如果x是一个对象或者函数，再进一步处理它，否则就是一个普通值
+            if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
+                // 可能是个对象或者函数
+                try {
+                    // 如果是个对象，尝试将对象上的then方法取出来，报错则转换为失败态
+                    // 如果对象中有then，且then是函数类型，就可以认为是一个promise对象，之后，使用x作为其this来调用执行then方法。
+                    let then = x.then;
+
+                    if (typeof then === 'function') {
+                        // then是function，那么执行promise
+                        then.call(
+                            x,
+                            (y) => {
+                                // 4、规范中定义如果resolvePromise和rejectPromise都被调用，或者多次调用同一个参数，第一个调用优先，任何进一步的调用都将被忽略，因此设定一个called来防止多次调用。
+                                if (called) return;
+                                called = true;
+
+                                // 3、当promise成功或者失败的时候，传入的还是一个promise对象，此时应该继续执行，直到最后的promise执行完。
+                                // 采用递归的方式，知道解析promise成一个普通值为止
+                                resolvePromise(promise2, y, resolve, reject);
+                                // resolve(y);
+                            },
+                            (r) => {
+                                if (called) return;
+                                called = true;
+                                reject(r);
+                            }
+                        )
+                    } else {
+                        resolve(x);
+                    }
+                } catch (e) {
+                    if (called) return;
+                    called = true;
+                    reject(e);
+                }
+            } else {
+                // 是个普通值
+                resolve(x);
+            }
+        }
+
+
+        // 检查该promise是否符合promise/A+规范。promises-aplus-tests包
+        Promise.defer = Promise.deferred = function() {
+            let defer = {};
+            defer.promise = new Promise((resolve, reject) => {
+                defer.resolve = resolve;
+                defer.reject = reject;
+            })
+
+            return defer;
+        }
+
+        // -----  栗子  -----
+        let p1 = new Promise((resolve, reject) => {
+            resolve(1);
+        })
+
+        p1.then((data) => {
+            console.log(data);
+        })
+
+        /**
+         * 这种情况下：setTimeout让resolve变成了异步执行，有延迟，调用then的时候，刺客还是pending状态，then方法还没有调用onFullfilled或者onRejected回调。
+         * 调整之后，可以支持异步的情况
+         * **/
+        let p2 = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(2)
+            }, 1000);
+        })
+
+        p2.then((data) => {
+            console.log(data)
+        })
+
+        let p3 = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                new Promise((resolve, reject) => {
+                    console.log('新的promise');
+                    setTimeout(() => {
+                        resolve(100);
+                    }, 3000);
+                }).then((data) => {
+                    console.log(data);
+                })
+                resolve(10);
+            }, 2000);
+        })
+
+        p3.then(data => {
+            console.log(data);
+        })
+    </script>
+</body>
+</html>

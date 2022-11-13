@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防抖函数</title>
+</head>
+<body>
+    <script>
+        /**
+            防抖函数：若持续触发某个事件，不会执行事件处理函数，只有在某一段时间没有触发后，才会执行事件处理函数
+        **/
+        function decounce(fn, time = 300) {
+            // 存储定时器返回的id
+            let timer = null;
+
+            return function () {
+                const args = arguments;
+
+                if (timer) {
+                    clearTimeout(timer);
+                }
+
+                timer = setTimeout(() => {
+                    // 改变this指向为调用debounce的对象
+                    fn.apply(this, args);
+                }, time);
+            }
+        }
+
+        /**
+            节流函数：持续触发事件，一个事件段内只会触发一次事件处理函数
+        **/
+        function throttle(fn, time = 300) {
+            let timer = null;
+
+            return function() {
+                if (!timer) return;
+
+                timer = setTimeout(() => {
+                    fn();
+                    clearTimeout(timer);
+                    timer = null
+                }, time)
+            }
+        }
+
+
+    </script>
+</body>
+</html>

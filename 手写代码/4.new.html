@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>new</title>
+    <!-- <script src="./new.js"></script> -->
+</head>
+<body>
+    
+
+    <script>
+        // 模拟实现 new 运算符
+        /**
+         * 1、创建了一个新的实例对象
+         * 2、该对象的__proto__属性与构造函数的prototype全等
+         * 3、改变this的指向，其指向新创建的实例对象
+         * **/
+
+
+
+        function myNew3() {
+            // 生成一个新的实例对象
+            let obj = new Object();
+            // 取到第一个参数，即构造函数
+            let constructor = Array.prototype.shift.call(arguments);
+            // 将新生成的实例对象的原型指向构造函数
+            obj.__proto__ = constructor.prototype;
+            // 改变this的指向
+            let ret = constructor.apply(obj, arguments);
+            // 返回这个新创建的实例
+            return typeof ret === 'object' ? ret : obj;
+        }
+
+        function Parent(name) {
+            this.name = name;
+        }
+
+        let obj1 = myNew3(Parent, '444');
+        console.log(obj1.name);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>观察者模式</title>
+</head>
+<body>
+    <script>
+        /**
+            观察者模式：一个对象（Subject）维持一系列依赖于它的对象（observe），当有关状态发生改变时，subject对象则通知一系列observe对象进行更新
+
+            对象Subject拥有添加、删除、通知等方法
+
+            而observe拥有更新的方法
+        **/
+
+        // Subject对象
+        function Subject() {
+            this.observers = [];
+        }
+
+        Subject.prototype = {
+            // Subject的新增方法，新增observe
+            add(observer) {
+                this.observers.push(observer);
+            },
+            // Subject的通知方法
+            notify() {
+                var observers = this.observers;
+
+                for (let i = 0; i < observers.length; i++) {
+                    observers[i].update();
+                }
+            },
+            // Subject的删除方法
+            remove(observer) {
+                var observers = this.observers;
+
+                for (let i = 0; i < observers.length; i++) {
+                    if (observers[i] === observer) {
+                        observers.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        // Observer对象
+        function Observer(name) {
+            this.name  = name;
+        }
+
+        // Observe对象的更新方法
+        Observer.prototype.update = function() {
+            console.log(`${this.name}   更新啦。。。。`)
+        }
+
+        // 被观察者
+        var sub1  = new Subject();
+
+        // 观察者
+        var obs1 = new Observer('1号选手');
+        var obs2 = new Observer('2号选手');
+        var obs3 = new Observer('3号选手');
+
+        // 添加
+        sub1.add(obs1);
+        sub1.add(obs2);
+        sub1.add(obs3);
+
+        // 通知
+        sub1.notify();
+
+        sub1.remove(obs1);
+
+        sub1.notify();
+
+    </script>
+</body>
+</html>

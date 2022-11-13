@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>栈</title>
+</head>
+
+<body>
+    <script>
+        /**
+        栗子：判断一个字符串是不是回文
+        **/
+
+        let str = 'ahaha';
+
+        function func1(str) {
+            // 找到中点
+
+            if (!str) return;
+
+            let arr = str.split('');
+
+            let next = 0; // 字符串匹配的起始下标
+
+            let len = arr.length;
+
+            let mid = arr / 2 - 1;
+
+            let tempArr = [];
+
+            let top = 0;
+
+            // 前一半数据入栈
+            for (let i = 0; i <= mid; i++) {
+                tempArr[++top] = arr[i];
+            }
+
+            // 栈中的数据与另一半数据相比，是否一致，以此来判断是否是回文
+
+            // 判断字符串的长度是基数还是偶数，并找出需要进行字符串匹配的起始下标
+            if (len % 2 === 0) {
+                // 偶数
+                next = mid + 1;
+            } else {
+                // 奇数
+                next = mid + 2;
+            }
+
+            for (let j = next; j < arr.length; j++) {
+                if (arr[j] !== arr[top]) {
+                    break;
+                }
+
+                top--;
+            }
+
+            if (top === 0) {
+                console.log('是回文。。。')
+            } else {
+                console.log('不是回文。。。')
+            }
+
+        }
+
+        func1(str);
+
+
+        /**
+            匹配括号的问题：栈 --- 先进后出
+        **/
+
+        const isMatch = (str) => {
+            console.time();
+            const rightBrackets = [')', ']', '}'];
+            const obj = {
+                '{': '}',
+                '[': ']',
+                '(': ')',
+            }
+            const arr = str.split('');
+            let stack = [];
+            const flag = arr.every(item => {
+                if (rightBrackets.includes(item)) {
+                    if (!stack.length) return false;
+                    return obj[stack.pop()] === item;
+                }
+
+                // 左括号则存入数组，右括号则匹配取出。括号相匹配的话，stack这个数组将为0
+
+                stack.push(item);
+                return true;
+            });
+            console.timeEnd();
+            return !stack.length && flag;
+        }
+
+        let str1 = '{()}';
+        let str2 = '{{()';
+        let str3 = '{()[]{}}'
+
+        console.log(isMatch(str3));
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手写setTimeout模拟实现setInterval</title>
+</head>
+
+<body>
+    <script>
+
+        /**
+         * 手写setTimeout模拟实现setInterval
+         * @param fn 定时器的回调函数
+         * @param time 定时器的定时时间
+         * **/
+        function mySettimeout(fn, time = 1000) {
+            // setTimeout的返回值
+            let timer = null;
+            // 定义一个标识，是否清除setTimeout
+            let isClear = false;
+
+            function interval() {
+                if (isClear) {
+                    issClear = false;
+                    clearTimeout(timer);
+                    return;
+                }
+
+                fn();
+
+                timer = setTimeout(interval, time);
+            }
+            timer = setTimeout(interval, time);
+
+            // 入会一个函数，调用函数可以停止该定时器
+            return () => {
+                isClear = true;
+            }
+        }
+
+        let a = mySettimeout(() => {
+            console.log(111);
+        }, 1000)
+
+        let cancel = mySettimeout(() => {
+            console.log(222)
+        }, 1000)
+
+        setTimeout(() => {
+            cancel();
+        }, 5000)
+    </script>
+</body>
+
+</html>

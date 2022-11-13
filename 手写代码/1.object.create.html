@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>object.create方法</title>
+
+    <style>
+        .test {
+            width: 100px;
+            height: 100px;
+            background-color: #ff0000;
+            /* transform: rotate(45deg); */
+        }
+        .test:before {
+            display: block;
+            content: '测试旋转';
+            transform: rotate(45deg);
+        }
+        .spanclass {
+            display: inline-block;
+            width: 100px;
+            transform: rotate(120deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="test"></div>
+    <span class="spanclass">文字111</span>
+
+
+    <script>
+        // 在一个方法内保实现：将传入的obj对象作为原型
+        function create(obj) {
+            function F() {};
+            F.prototype = obj;
+            return new F();
+        }
+
+        let obj = {
+            name: 'name123',
+            age: 12
+        }
+
+        let obj1 = Object.create(obj);
+        console.log(obj1);
+        console.log(obj1.name);
+
+        let obj2 = create(obj);
+        console.log(obj2);
+        console.log(obj2.name);
+
+        let obj3 = {};
+        // 这里直接使用给原型对象赋值的方式，来实现和Object.create一样的效果
+        obj3.__proto__ = obj1;
+        console.log(obj3);
+        console.log(obj3.name);
+    </script>
+
+    <!-- 
+        object.create(): 这个方法用来创建一个新的对象，使用现有的对象来提供新创建的对象的`__proto__`。
+            - 实现思路：将传入的对象作为原型。
+     -->
+</body>
+</html>

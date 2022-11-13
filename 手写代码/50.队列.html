@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>队列</title>
+</head>
+<body>
+    <script>
+        /**
+            一个数组；两个变量，一个指向头，一个指向尾。
+            用两个变量++的操作，来模拟移动数组中操作
+        **/
+
+        let arr = [6, 3, 1, 7, 5, 8, 9, 2, 4];
+        let newArr = [];
+
+        function queue() {
+            let head  = 0;
+            let tail = arr.length;
+
+            while(head < tail) {
+                // // 当队列不为空的时候，执行
+
+                // 先出队 --  head++
+                newArr.push(arr.shift());
+                head++;
+
+                arr.push(arr.shift());
+                tail++;
+
+                head++;
+            }
+
+        }
+
+        queue();
+
+        console.log(arr, newArr)
+
+    </script>
+</body>
+</html>
