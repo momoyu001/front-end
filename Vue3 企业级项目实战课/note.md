@@ -222,3 +222,67 @@ module.exports = {
 
 </html>
 ```
+
+## 模版语法和JSX语法
+
+Vue的两种开发语法：模板语法和 JSX 语法
+
+**模板语法**
+
+HTML 语法的一种扩展，它所有的模板节点声明、属性设置和事件注册等都是按照 HTML 的语法来进行扩展设计的。
+
+**JSX 写法**
+JSX 写法，是 JavaScript 语法的一种语法扩展，支持在 JavaScript 中直接写类似 HTML 的模板代码，可以理解为 **HTML in JavaScript**。
+
+Vue3 中，借助 `defineComponent` 这个 API 来声明定义。
+
+JSX 中，都是用**单大括号“{state.count}”来作为内部变量处理，而 Vue 模板语法是通过双大括号来表示“{{state.count}}”**
+
+JSX 开发组件，组件的 CSS 代码也是独立放在 CSS 文件，最后通过 import 引入。
+
+```jsx
+import {
+    defineComponent
+} from 'vue';
+
+const Counter = defineComponent({
+    // ...
+    render(ctx) {
+        const {
+            state,
+            onClick
+        } = ctx;
+
+        return ( <
+            div class = "counter" >
+            <
+            div class = "text" > Counter: {
+                state.count
+            } < /div> <
+            button class = "btn"
+            onClick = {
+                onClick
+            } > Add < /button> < /
+            div >
+        )
+    }
+})
+```
+
+**模板语法和 JSX 语法的区别**
+
+1、模板语法可以设置 `scoped` 属性，JSX 语法不可以设置
+
+2、实现需求场景下的不同，例如“动态组件”的长江，JSX 更有优势
+
+普通功能开发以模板语法为主，方便照顾到团队里不同技术能力程度的组员，让项目技术实现沟通起来方便些。
+
+模板语法比较难实现的功能就换成 JSX 语法实现，例如一些对话框等动态组件场景，主要为了功能灵活实现和后续代码维护。
+
+学习资源：
+
+* [ant-desing-vue](https://github.com/vueComponent/ant-design-vue)
+
+* [vant-ui](https://github.com/youzan/vant)
+
+JSX 语法下，如何实现样式隔离呢？可以参考学习一下 `CSS in JS`
