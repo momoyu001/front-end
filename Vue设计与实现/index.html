@@ -20,7 +20,8 @@
             // 原始数据
             let data = {
                 name: 'lixia',
-                age: 20
+                age: 20,
+                ok: true,
             };
 
             // proxy 代理对象
@@ -80,7 +81,8 @@
             // 副作用函数
             const effectFn = () => {
                 console.log('副作用函数');
-                document.getElementById('app').textContent = proxyObj.name;
+                // document.getElementById('app').textContent = proxyObj.name;
+                document.getElementById('app').textContent = proxyObj.ok ? proxyObj.name : '复现分支场景';
             };
 
             const input = document.getElementById('input');
@@ -97,6 +99,7 @@
                 effect(effectFn);
                 setTimeout(()=> {
                     proxyObj.age = 120;
+                    proxyObj.ok = false;
                 }, 3000)
             })();
         </script>
