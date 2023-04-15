@@ -20,6 +20,7 @@
             // 原始数据
             let data = {
                 name: 'lixia',
+                age: 20
             };
 
             // proxy 代理对象
@@ -78,6 +79,9 @@
             // 立即执行函数，一打开页面就会执行，首先执行一次展示页面内容
             (function () {
                 effect(effectFn);
+                setTimeout(()=> {
+                    proxyObj.age = 120;
+                }, 3000)
             })();
         </script>
     </body>
