@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="btn-box">
-            <input type="text" id="input">
+            <input type="text" id="input" />
             <button onclick="handleButtonClick" id="button">在输入框中输入后，点击按钮修改原始对象的值</button>
         </div>
         <div id="app"></div>
@@ -16,7 +16,7 @@
             /**
              * 响应系统的实现
              * **/
-            
+
             // 原始数据
             let data = {
                 name: 'lixia',
@@ -25,16 +25,14 @@
             // proxy 代理对象
             const proxyObj = new Proxy(data, {
                 get(target, key) {
-                    console.log('get 拦截')
-                    if (activeEffectFn) {
-                        bucket.add(activeEffectFn);
-                    }
+                    console.log('get 拦截');
+                    track();
                     return target[key];
                 },
                 set(target, key, value) {
-                    console.log('set 拦截')
+                    console.log('set 拦截');
                     target[key] = value;
-                    bucket.forEach(fn => fn());
+                    trigger();
                     return true;
                 },
             });
@@ -42,35 +40,45 @@
             // 存储副作用函数
             const bucket = new Set();
 
+            // 跟踪函数，在目标对象的 get 拦截中调用，注册副作用函数
+            const track = () => {
+                if (activeEffectFn) {
+                    bucket.add(activeEffectFn);
+                }
+            };
+
+            // 触发函数，在目标对象的 set 拦截中调用，调用副作用函数
+            const trigger = () => {
+                bucket.forEach(fn => fn());
+            };
+
             // 全局变量
             let activeEffectFn;
             // 注册副作用函数
-            const effect = (fn) => {
+            const effect = fn => {
                 activeEffectFn = fn;
                 fn();
-            }
+            };
 
             // 副作用函数
             const effectFn = () => {
                 console.log('副作用函数');
                 document.getElementById('app').textContent = proxyObj.name;
-            }
+            };
 
             const input = document.getElementById('input');
 
             // 按钮点击事件
             const handleButtonClick = () => {
-                console.log('点击事件函数')
+                console.log('点击事件函数');
                 proxyObj.name = input.value;
-            }
+            };
             document.getElementById('button').addEventListener('click', handleButtonClick);
 
-
             // 立即执行函数，一打开页面就会执行，首先执行一次展示页面内容
-            (function() {
+            (function () {
                 effect(effectFn);
-            })()
-
+            })();
         </script>
     </body>
 </html>
