@@ -60,6 +60,9 @@
                 }
 
                 deps.add(activeEffectFn);
+
+                // deps 就是一个与当前副作用函数存在依赖关系的集合。将其添加到 activeEffectFn.deps 中。完成对依赖的收集
+                activeEffectFn.deps.push(deps);
             };
 
             // 触发函数，在目标对象的 set 拦截中调用，调用副作用函数
@@ -67,16 +70,50 @@
                 let depsMap = bucket.get(target);
                 if (!depsMap) return;
                 let effects = depsMap.get(key);
-                effects && effects.forEach(fn => fn());
+                // 这里副作用函数执行时，会调用 cleanUp 函数，然后副作用函数的执行又会重新添加被收集到集合中，一直循环下去
+                // 因此添加一个新的 set 来解决该问题（这样就不会在同一个 set 中删除、添加数据导致循环）
+                const effectsToRun = new Set(effects);
+                effectsToRun && effectsToRun.forEach(fn => fn());
             };
 
             // 全局变量
             let activeEffectFn;
             // 注册副作用函数
+            /**
+             * 为了解决分支场景下 key 和副作用函数的关联关系没有及时更新的问题，需要在每次重新注册之前，先将该 activeEffect 的所有关联关系先解除，然后当当前的这个 activeEffect 函数执行之后，又会被添加关联关系
+             * 
+             * 要解决改问题，首先需要明确的知道那些以来集合包含它。
+             * **/
             const effect = fn => {
-                activeEffectFn = fn;
-                fn();
+                // 
+                // 添加新的 effectFn 函数
+                const effectFn = () => {
+                    // 调用 cleanUp 函数先完成清除工作
+                    cleanUp(effectFn);
+                    // 当 effectFn 执行时，将其设置为当前激活的副作用函数
+                    activeEffectFn = effectFn;
+                    fn();
+                }
+                
+                // activeEffectFn.deps 用来存储所有与该该副作用函数相关联的依赖集合。这里是注册副作用函数，初始时 deps 为空，deps 的收集是在 track 中进行的。
+                effectFn.deps = [];
+
+                // 执行副作用函数
+                effectFn();
             };
+
+            // 该函数中清除 activeEffectFn 相关的关联关系
+            /**
+             * 该函数接收 effectFn 作为参数，遍历副作用函数中的 deps 数组，该数组中的每一项都是一个依赖集合，然后将副作用函数从该依赖集合中移除
+             * **/
+            const cleanUp = (effectFn) => {
+                for(let i = 0; i < effectFn.deps.length; i++) {
+                    // 依赖集合
+                    const deps = effectFn.deps[i];
+                    // 将 effectFn 从集合中移除
+                    deps.delete(effectFn);
+                }
+            }
 
             // 副作用函数
             const effectFn = () => {
@@ -98,10 +135,26 @@
             (function () {
                 effect(effectFn);
                 setTimeout(()=> {
-                    proxyObj.age = 120;
                     proxyObj.ok = false;
                 }, 3000)
             })();
+
+            /**
+             * 循环调用相关说明：
+             * 
+             * 1、effect(Fn) 初次执行
+             * 2、Fn 函数内部：给 effectFn 函数添加 deps 数组；调用 effectFn 函数；
+             *      1）effectFn 函数内部：调用 cleanUp 函数；给 activeEffectFn 函数赋值；执行传入的 Fn 函数
+             *          1-1）cleanUp 函数内部，若 deps 数组有值，则清除依赖关系
+             * 3、fn 内部读取 proxyObj.data 触发了 get 拦截
+             * 4、get 拦截内部调用 track 函数
+             * 5、track 函数内部收集依赖，给当前激活的副作用函数添加 deps 数据
+             * 6、get proxyObj.ok 赋值，触发 set 拦截
+             * 7、set 拦截内部调用 trigger 函数
+             * 8、trigger 函数内部会执行与该 key 相关的副作用函数 effectFn
+             * 9、回到第 2 - 1 步，会调用到 cleanUp 函数清除依赖关系，然后又调用 fn ，调用 fn 之后又会触发 get 拦截添加依赖
+             * 10、最终导致一直循环调用（因为在同一个集合中添加、删除）
+             * **/
         </script>
     </body>
 </html>
