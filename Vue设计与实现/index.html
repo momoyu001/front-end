@@ -78,6 +78,10 @@
 
             // 全局变量
             let activeEffectFn;
+
+            // 为了解决副作用函数嵌套的问题，需要增加一个副作用函数栈，在收集副作用函数的过程中不断的入栈出栈，保证 key 和副作用函数的关联关系不会出问题
+            let effectStack = [];
+
             // 注册副作用函数
             /**
              * 为了解决分支场景下 key 和副作用函数的关联关系没有及时更新的问题，需要在每次重新注册之前，先将该 activeEffect 的所有关联关系先解除，然后当当前的这个 activeEffect 函数执行之后，又会被添加关联关系
@@ -92,7 +96,14 @@
                     cleanUp(effectFn);
                     // 当 effectFn 执行时，将其设置为当前激活的副作用函数
                     activeEffectFn = effectFn;
+
+                    // 在调用副作用函数之前，将当前副作用函数压入栈中
+                    effectStack.push(effectFn);
                     fn();
+
+                    // 在当前副作用函数执行完毕之后，将当前副作用函数弹出栈，并把 activeEffectFn 还原为之前的值
+                    effectStack.pop();
+                    activeEffectFn = effectStack[effectStack.length - 1];
                 }
                 
                 // activeEffectFn.deps 用来存储所有与该该副作用函数相关联的依赖集合。这里是注册副作用函数，初始时 deps 为空，deps 的收集是在 track 中进行的。
@@ -140,6 +151,14 @@
 
                 let tmp1,tmp2; // 临时变量
 
+                /**
+                 * 嵌套关系下出现问题的原因分析：
+                 * 1、我们的 activeEffectFn 是一个全局变量
+                 * 2、执行 effectFn1 的时候，activeEffectFn 被赋值为了 effectFn1
+                 * 3、但是正在执行 effectFn1 的过程中，又有 effectFn2 执行，此时 activeEffectFn 被赋值为了 effectFn2
+                 * 4、effectFn2 内部触发 proxyObj.name 的 get 拦截，将 effectFn2 收集了（这是正确的）
+                 * 5、但是由于 activeEffectFn 的值已经被改变了，没有恢复，此时触发 age 的 get 拦截，收集到的副作用函数就是 effectFn2 ，而不是 effectFn1
+                 * **/
                 effect(function effectFn1() {
                     console.log('effectFn1 执行')
 
