@@ -27,12 +27,12 @@
             // proxy 代理对象
             const proxyObj = new Proxy(data, {
                 get(target, key) {
-                    console.log('get 拦截');
+                    // console.log('get 拦截');
                     track(target, key);
                     return target[key];
                 },
                 set(target, key, value) {
-                    console.log('set 拦截');
+                    // console.log('set 拦截');
                     target[key] = value;
                     trigger(target, key);
                     return true;
@@ -133,10 +133,27 @@
 
             // 立即执行函数，一打开页面就会执行，首先执行一次展示页面内容
             (function () {
-                effect(effectFn);
-                setTimeout(()=> {
-                    proxyObj.ok = false;
-                }, 3000)
+                // effect(effectFn);
+                // setTimeout(()=> {
+                //     proxyObj.ok = false;
+                // }, 3000)
+
+                let tmp1,tmp2; // 临时变量
+
+                effect(function effectFn1() {
+                    console.log('effectFn1 执行')
+
+                    effect(function effectFn2() {
+                        console.log('effectFn2 执行')
+                        tmp2 = proxyObj.name;
+                    })
+                    tmp1 = proxyObj.age;
+
+                })
+
+                setTimeout(() => {
+                    proxyObj.age = 300;
+                },  2000)
             })();
 
             /**
