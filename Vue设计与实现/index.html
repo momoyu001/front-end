@@ -149,7 +149,7 @@
                 //     proxyObj.ok = false;
                 // }, 3000)
 
-                let tmp1,tmp2; // 临时变量
+                // let tmp1,tmp2; // 临时变量
 
                 /**
                  * 嵌套关系下出现问题的原因分析：
@@ -159,20 +159,24 @@
                  * 4、effectFn2 内部触发 proxyObj.name 的 get 拦截，将 effectFn2 收集了（这是正确的）
                  * 5、但是由于 activeEffectFn 的值已经被改变了，没有恢复，此时触发 age 的 get 拦截，收集到的副作用函数就是 effectFn2 ，而不是 effectFn1
                  * **/
-                effect(function effectFn1() {
-                    console.log('effectFn1 执行')
+                // effect(function effectFn1() {
+                //     console.log('effectFn1 执行')
 
-                    effect(function effectFn2() {
-                        console.log('effectFn2 执行')
-                        tmp2 = proxyObj.name;
-                    })
-                    tmp1 = proxyObj.age;
+                //     effect(function effectFn2() {
+                //         console.log('effectFn2 执行')
+                //         tmp2 = proxyObj.name;
+                //     })
+                //     tmp1 = proxyObj.age;
 
+                // })
+
+                // setTimeout(() => {
+                //     proxyObj.age = 300;
+                // },  2000)
+
+                effect(() => {
+                    proxyObj.age++;
                 })
-
-                setTimeout(() => {
-                    proxyObj.age = 300;
-                },  2000)
             })();
 
             /**
