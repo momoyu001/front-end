@@ -66,6 +66,9 @@
             };
 
             // 触发函数，在目标对象的 set 拦截中调用，调用副作用函数
+            /**
+             * 为了解决无限循环调用导致的堆栈溢出问题，需要在 trigger 内增加一个守卫：如果要执行的副作用函数与当前正在执行的副作用函数相同，那么就不执行
+             * **/
             const trigger = (target, key) => {
                 let depsMap = bucket.get(target);
                 if (!depsMap) return;
@@ -73,7 +76,11 @@
                 // 这里副作用函数执行时，会调用 cleanUp 函数，然后副作用函数的执行又会重新添加被收集到集合中，一直循环下去
                 // 因此添加一个新的 set 来解决该问题（这样就不会在同一个 set 中删除、添加数据导致循环）
                 const effectsToRun = new Set(effects);
-                effectsToRun && effectsToRun.forEach(fn => fn());
+                effectsToRun && effectsToRun.forEach(fn => {
+                    if (fn !== activeEffectFn) {
+                        fn();
+                    }
+                });
             };
 
             // 全局变量
@@ -174,8 +181,21 @@
                 //     proxyObj.age = 300;
                 // },  2000)
 
+                /**
+                 * 无限循环导致堆栈溢出原因分析：
+                 * 
+                 * proxyObj.age++ 可以分解为 proxyObj.age = proxyObj.age + 1;
+                 * 这一行代码中，既有读取值的操作，又有设置值的操作
+                 * 读取值的时候会收集副作用函数
+                 * 设置值的时候会执行副作用函数
+                 * 
+                 * 副作用函数在还没有执行完毕的时候就开始调用下一次，会导致无限递归的调用自己，于是就产生了栈溢出
+                 * 
+                 * 此时 track 内要收集的副作用函数，和 trigger 内要执行的副作用函数，都是 activeEffectFn
+                 * **/
                 effect(() => {
                     proxyObj.age++;
+                    document.getElementById('app').textContent = proxyObj.age
                 })
             })();
 
